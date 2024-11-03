@@ -1,0 +1,8 @@
+### environment variable ###
+.env
+
+### build ###
+build
+.gradle
+.idea
+.DS_Store
