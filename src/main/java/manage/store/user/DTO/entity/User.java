@@ -2,8 +2,11 @@ package manage.store.user.DTO.entity;
 
 import lombok.*;
 
-@Data
+@Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class User {
     private String id;
     private String password;
@@ -15,13 +18,15 @@ public class User {
     private String authCd;
     private String workStartDate;
     private String workEndDate;
-    private String workStatus;
+    private String workStatusCd;
     private String bankName;
     private String bankAccountNo;
-    private String monthSalary;
-    private String hourWage;
+    private Integer monthSalary;
+    private Integer hourWage;
     private String createdBy;
     private String createdDate;
     private String lastUpdatedBy;
     private String lastUpdatedDate;
 }
+
+
