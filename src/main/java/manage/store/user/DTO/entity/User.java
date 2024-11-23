@@ -2,6 +2,8 @@ package manage.store.user.DTO.entity;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +29,28 @@ public class User {
     private String createdDate;
     private String lastUpdatedBy;
     private String lastUpdatedDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(getId(), user.getId())
+                && Objects.equals(getPassword(), user.getPassword())
+                && Objects.equals(getName(), user.getName())
+                && Objects.equals(getResidentRegistNo(), user.getResidentRegistNo())
+                && Objects.equals(getPhoneNo(), user.getPhoneNo())
+                && Objects.equals(getEmail(), user.getEmail())
+                && Objects.equals(getAddress(), user.getAddress())
+                && Objects.equals(getAuthCd(), user.getAuthCd())
+                && Objects.equals(getWorkStartDate(), user.getWorkStartDate())
+                && Objects.equals(getWorkEndDate(), user.getWorkEndDate())
+                && Objects.equals(getWorkStatusCd(), user.getWorkStatusCd())
+                && Objects.equals(getBankName(), user.getBankName())
+                && Objects.equals(getBankAccountNo(), user.getBankAccountNo())
+                && Objects.equals(getMonthSalary(), user.getMonthSalary())
+                && Objects.equals(getHourWage(), user.getHourWage());
+    }
 }
 
 

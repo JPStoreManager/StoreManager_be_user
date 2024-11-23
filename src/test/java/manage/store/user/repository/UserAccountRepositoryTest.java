@@ -50,7 +50,7 @@ class UserAccountRepositoryTest {
         User dbUser = userAccountRepository.selectUserById(user.getId());
 
         // then
-        assertTrue(UserUtils.compareUser(user, dbUser));
+        assertTrue(user.equals(dbUser));
     }
 
     @Test
@@ -126,5 +126,66 @@ class UserAccountRepositoryTest {
         // when - then
         assertThrows(DuplicateKeyException.class, () -> userAccountRepository.insertUser(user));
         assertThat(userAccountRepository.selectUserById(user.getId())).isNull();
+    }
+
+    /** update */
+    @Test
+    @DisplayName("updateUser 성공")
+    public void updateUser_success() {
+        // given
+        User user = UserUtils.createUser(users[0].getId());
+
+        // when
+        int result = userAccountRepository.updateUser(user);
+
+        // then
+        assertEquals(1, result);
+        assertTrue(user.equals(userAccountRepository.selectUserById(user.getId())));
+    }
+
+    @Test
+    @DisplayName("updateUser 실패 - 존재하지 않는 id")
+    public void updateUser_fail_noUser() {
+        // given
+        User user = UserUtils.createUser("noUserId");
+
+        // when
+        int result = userAccountRepository.updateUser(user);
+
+        // then
+        assertEquals(0, result);
+    }
+
+    @Test
+    @DisplayName("updateUser 실패 - 중복된 email(UNIQUE)")
+    public void updateUser_fail_duplicateEmail_UNIQUE() {
+        // given
+        User user = users[0];
+        user.setEmail(users[1].getEmail());
+
+        // when - then
+        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
+    }
+
+    @Test
+    @DisplayName("updateUser 실패 - 중복된 phoneNo(UNIQUE)")
+    public void updateUser_fail_duplicatePhoneNo_UNIQUE() {
+        // given
+        User user = users[0];
+        user.setPhoneNo(users[1].getPhoneNo());
+
+        // when - then
+        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
+    }
+
+    @Test
+    @DisplayName("updateUser 실패 - 중복된 residentRegistNo(UNIQUE)")
+    public void updateUser_fail_duplicateResidentRegistNo_UNIQUE() {
+        // given
+        User user = users[0];
+        user.setResidentRegistNo(users[1].getResidentRegistNo());
+
+        // when - then
+        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
     }
 }

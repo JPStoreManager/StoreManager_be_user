@@ -29,32 +29,4 @@ public interface UserUtils {
                 .build();
     }
 
-    /**
-     * 사용자 객체를 비교한다.
-     * @param origin 원본 사용자 객체
-     * @param compare 비교할 사용자 객체
-     * @return 두 사용자 객체가 동일한지 여부
-     * true{@code boolean} - origin과 compare가 동일한 경우
-     * false{@code boolean} - origin과 compare가 동일하지 않은 경우
-     */
-    static boolean compareUser(User origin, User compare) {
-        return origin.getId().equals(compare.getId())
-                && origin.getPassword().equals(compare.getPassword())
-                && origin.getName().equals(compare.getName())
-                && origin.getResidentRegistNo().equals(compare.getResidentRegistNo())
-                && origin.getPhoneNo().equals(compare.getPhoneNo())
-                && origin.getEmail().equals(compare.getEmail())
-                && origin.getAddress().equals(compare.getAddress())
-                && origin.getAuthCd().equals(compare.getAuthCd())
-                && origin.getWorkStartDate().equals(compare.getWorkStartDate())
-                && origin.getWorkEndDate().equals(compare.getWorkEndDate())
-                && origin.getWorkStatusCd().equals(compare.getWorkStatusCd())
-                && origin.getBankName().equals(compare.getBankName())
-                && origin.getBankAccountNo().equals(compare.getBankAccountNo())
-                && origin.getMonthSalary().equals(compare.getMonthSalary())
-                && origin.getHourWage().equals(compare.getHourWage())
-                && origin.getCreatedBy().equals(compare.getCreatedBy())
-                && origin.getLastUpdatedBy().equals(compare.getLastUpdatedBy());
-    }
-
 }

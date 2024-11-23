@@ -25,22 +25,22 @@
 
     <update id="updateUser">
         UPDATE user
-           SET password = #{password},
-               name = #{name},
-               resident_regist_no = #{resident_regist_no},
-               phone_no = #{phone_no},
-               email = #{email},
-               address = #{address},
-               auth_cd = #{auth_cd},
-               work_start_date = #{work_start_date},
-               work_end_date = #{work_end_date},
-               work_status = #{work_status},
-               bank_name = #{bank_name},
-               bank_account_no = #{bank_account_no},
-               month_salary = #{month_salary},
-               hour_wage = #{hour_wage},
-               last_updated_by = #{last_updated_by},
-               last_updated_date = CURRENT_TIMESTAMP
+           SET password             = #{password},
+               name                 = #{name},
+               resident_regist_no   = #{residentRegistNo},
+               phone_no             = #{phoneNo},
+               email                = #{email},
+               address              = #{address},
+               auth_cd              = #{authCd},
+               work_start_date      = #{workStartDate},
+               work_end_date        = #{workEndDate},
+               work_status_cd       = #{workStatusCd},
+               bank_name            = #{bankName},
+               bank_account_no      = #{bankAccountNo},
+               month_salary         = #{monthSalary},
+               hour_wage            = #{hourWage},
+               last_updated_by      = #{lastUpdatedBy},
+               last_updated_date    = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 
