@@ -1,4 +1,4 @@
-package manage.store.user.util;
+package manage.store.util;
 
 import manage.store.user.DTO.entity.User;
 

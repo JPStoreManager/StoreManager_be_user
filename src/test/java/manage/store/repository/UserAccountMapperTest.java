@@ -1,7 +1,8 @@
-package manage.store.user.repository;
+package manage.store.repository;
 
 import manage.store.user.DTO.entity.User;
-import manage.store.user.util.UserUtils;
+import manage.store.user.repository.mapper.UserAccountMapper;
+import manage.store.util.UserUtils;
 import manage.store.user.servlet.UserApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,10 +20,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 @MybatisTest
 @ContextConfiguration(classes = UserApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserAccountRepositoryTest {
+class UserAccountMapperTest {
 
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private UserAccountMapper userAccountMapper;
 
     private static User[] users;
 
@@ -33,7 +34,7 @@ class UserAccountRepositoryTest {
         users = new User[3];
         for (int i = 1; i <= users.length; i++) {
             User user = UserUtils.createUser(idPrefix + i);
-            userAccountRepository.insertUser(user);
+            userAccountMapper.insertUser(user);
             users[i-1] = user;
         }
     }
@@ -47,7 +48,7 @@ class UserAccountRepositoryTest {
         User user = users[0];
 
         // when
-        User dbUser = userAccountRepository.selectUserById(user.getId());
+        User dbUser = userAccountMapper.selectUserById(user.getId());
 
         // then
         assertTrue(user.equals(dbUser));
@@ -61,7 +62,7 @@ class UserAccountRepositoryTest {
         String noUserId = "noUserId";
 
         // when
-        User dbUser = userAccountRepository.selectUserById(noUserId);
+        User dbUser = userAccountMapper.selectUserById(noUserId);
 
         // then
         assertThat(dbUser).isNull();
@@ -76,7 +77,7 @@ class UserAccountRepositoryTest {
         User user = UserUtils.createUser("userId4");
 
         // when
-        int result = userAccountRepository.insertUser(user);
+        int result = userAccountMapper.insertUser(user);
 
         // then
         assertEquals(1, result);
@@ -89,7 +90,7 @@ class UserAccountRepositoryTest {
         User user = UserUtils.createUser("userId1");
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.insertUser(user));
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
     }
 
     @Test
@@ -100,8 +101,8 @@ class UserAccountRepositoryTest {
         user.setEmail(users[0].getEmail());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.insertUser(user));
-        assertThat(userAccountRepository.selectUserById(user.getId())).isNull();
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
+        assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
 
     @Test
@@ -112,8 +113,8 @@ class UserAccountRepositoryTest {
         user.setPhoneNo(users[0].getPhoneNo());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.insertUser(user));
-        assertThat(userAccountRepository.selectUserById(user.getId())).isNull();
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
+        assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
 
     @Test
@@ -124,8 +125,8 @@ class UserAccountRepositoryTest {
         user.setResidentRegistNo(users[0].getResidentRegistNo());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.insertUser(user));
-        assertThat(userAccountRepository.selectUserById(user.getId())).isNull();
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
+        assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
 
     /** update */
@@ -136,11 +137,11 @@ class UserAccountRepositoryTest {
         User user = UserUtils.createUser(users[0].getId());
 
         // when
-        int result = userAccountRepository.updateUser(user);
+        int result = userAccountMapper.updateUser(user);
 
         // then
         assertEquals(1, result);
-        assertTrue(user.equals(userAccountRepository.selectUserById(user.getId())));
+        assertTrue(user.equals(userAccountMapper.selectUserById(user.getId())));
     }
 
     @Test
@@ -150,7 +151,7 @@ class UserAccountRepositoryTest {
         User user = UserUtils.createUser("noUserId");
 
         // when
-        int result = userAccountRepository.updateUser(user);
+        int result = userAccountMapper.updateUser(user);
 
         // then
         assertEquals(0, result);
@@ -164,7 +165,7 @@ class UserAccountRepositoryTest {
         user.setEmail(users[1].getEmail());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 
     @Test
@@ -175,7 +176,7 @@ class UserAccountRepositoryTest {
         user.setPhoneNo(users[1].getPhoneNo());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 
     @Test
@@ -186,6 +187,6 @@ class UserAccountRepositoryTest {
         user.setResidentRegistNo(users[1].getResidentRegistNo());
 
         // when - then
-        assertThrows(DuplicateKeyException.class, () -> userAccountRepository.updateUser(user));
+        assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 }

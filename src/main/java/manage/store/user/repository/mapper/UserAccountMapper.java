@@ -1,9 +1,11 @@
-package manage.store.user.repository;
+package manage.store.user.repository.mapper;
 
 import manage.store.user.DTO.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-public interface UserAccountRepository {
+@Mapper
+public interface UserAccountMapper {
 
     User selectUserById(@Param(value = "id") String id);
 

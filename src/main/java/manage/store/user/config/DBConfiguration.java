@@ -11,7 +11,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "manage.store.user.repository")
+@MapperScan(basePackages = "manage.store.user.repository.mapper")
 public class DBConfiguration {
 
     @Bean
