@@ -1,8 +1,8 @@
-package manage.store.user.service;
+package manage.store.service;
 
-import manage.store.user.DTO.service.LoginDTO;
-import manage.store.user.DTO.service.LoginResultDTO;
-import manage.store.user.exception.InvalidParameterException;
+import manage.store.DTO.service.LoginDTO;
+import manage.store.DTO.service.LoginResultDTO;
+import manage.store.exception.InvalidParameterException;
 
 public interface UserAccountService {
     /**

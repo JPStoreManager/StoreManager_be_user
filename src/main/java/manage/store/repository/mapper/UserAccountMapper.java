@@ -1,6 +1,6 @@
-package manage.store.user.repository.mapper;
+package manage.store.repository.mapper;
 
-import manage.store.user.DTO.entity.User;
+import manage.store.DTO.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

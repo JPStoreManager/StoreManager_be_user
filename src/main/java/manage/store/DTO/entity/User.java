@@ -1,4 +1,4 @@
-package manage.store.user.DTO.entity;
+package manage.store.DTO.entity;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package manage.store.user.config;
+package manage.store.config;
 
 import org.springframework.context.annotation.Configuration;
 

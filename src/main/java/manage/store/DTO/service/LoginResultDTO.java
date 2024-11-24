@@ -1,4 +1,4 @@
-package manage.store.user.DTO.service;
+package manage.store.DTO.service;
 
 import lombok.Data;
 

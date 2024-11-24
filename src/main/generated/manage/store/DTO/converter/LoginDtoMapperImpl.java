@@ -6,7 +6,7 @@ import manage.store.DTO.service.LoginDTO;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-23T17:29:50+0900",
+    date = "2024-11-24T13:34:55+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Amazon.com Inc.)"
 )
 public class LoginDtoMapperImpl implements LoginDtoMapper {

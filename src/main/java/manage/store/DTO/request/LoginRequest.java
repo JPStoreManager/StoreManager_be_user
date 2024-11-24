@@ -1,4 +1,4 @@
-package manage.store.user.DTO.request;
+package manage.store.DTO.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;

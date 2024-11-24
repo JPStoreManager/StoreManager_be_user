@@ -1,8 +1,8 @@
-package manage.store.user.repository;
+package manage.store.repository;
 
 import lombok.RequiredArgsConstructor;
-import manage.store.user.DTO.entity.User;
-import manage.store.user.repository.mapper.UserAccountMapper;
+import manage.store.DTO.entity.User;
+import manage.store.repository.mapper.UserAccountMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository

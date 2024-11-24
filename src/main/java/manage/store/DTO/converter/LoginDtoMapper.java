@@ -1,7 +1,7 @@
-package manage.store.user.DTO.converter;
+package manage.store.DTO.converter;
 
-import manage.store.user.DTO.request.LoginRequest;
-import manage.store.user.DTO.service.LoginDTO;
+import manage.store.DTO.request.LoginRequest;
+import manage.store.DTO.service.LoginDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

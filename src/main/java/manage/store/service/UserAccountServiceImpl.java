@@ -1,10 +1,10 @@
-package manage.store.user.service;
+package manage.store.service;
 
 import lombok.RequiredArgsConstructor;
-import manage.store.user.DTO.entity.User;
-import manage.store.user.DTO.service.LoginDTO;
-import manage.store.user.DTO.service.LoginResultDTO;
-import manage.store.user.repository.UserAccountRepository;
+import manage.store.DTO.entity.User;
+import manage.store.DTO.service.LoginDTO;
+import manage.store.DTO.service.LoginResultDTO;
+import manage.store.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
 
 @Service

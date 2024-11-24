@@ -1,4 +1,4 @@
-package manage.store.user.DTO.response;
+package manage.store.DTO.response;
 
 import lombok.Data;
 

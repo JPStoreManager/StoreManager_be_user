@@ -1,6 +1,5 @@
-package manage.store.user.config;
+package manage.store.config;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,7 +10,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "manage.store.user.repository.mapper")
+@MapperScan(basePackages = "manage.store.repository.mapper")
 public class DBConfiguration {
 
     @Bean
@@ -20,7 +19,7 @@ public class DBConfiguration {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setMapperLocations(resolver.getResources("classpath:mapper/user/*.xml"));
-        factoryBean.setTypeAliasesPackage("manage.store.user.DTO.entity");
+        factoryBean.setTypeAliasesPackage("manage.store.DTO.entity");
         SqlSessionFactory sqlSessionFactory = factoryBean.getObject();
         if(sqlSessionFactory != null) {
             org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();

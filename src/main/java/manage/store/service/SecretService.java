@@ -1,4 +1,4 @@
-package manage.store.user.service;
+package manage.store.service;
 
 public interface SecretService {
 
