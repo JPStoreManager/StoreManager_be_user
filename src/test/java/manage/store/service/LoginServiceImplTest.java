@@ -30,15 +30,15 @@ import static org.assertj.core.api.Assertions.*;
 @ExtendWith({MockitoExtension.class})
 class LoginServiceImplTest extends ServiceTest{
 
+    /** 타겟 외 임시로 given-then이 주어질 객체 */
     @Mock
     private UserAccountRepository userAccountRepository;
 
+    /** 실제 테스트 타겟 객체*/
     @InjectMocks
     private LoginServiceImpl loginService;
 
-    /**
-     * Static class의 mock을 위한 MockedStatic
-     */
+    /** Static class의 mock을 위한 MockedStatic */
     private static final MockedStatic<SecretUtils> SecretUtilsMock = mockStatic(SecretUtils.class);
 
     @BeforeAll

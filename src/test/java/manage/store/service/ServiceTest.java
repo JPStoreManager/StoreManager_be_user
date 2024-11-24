@@ -10,9 +10,7 @@ public class ServiceTest {
 
     protected static Validator validator;
 
-    /**
-     *
-     */
+    /** Service의 DTO Validation을 위한 Validator 초기화 */
     protected static void initValidator() {
         LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
         factoryBean.afterPropertiesSet();
