@@ -1,9 +1,9 @@
 package manage.store.repository;
 
-import manage.store.user.DTO.entity.User;
-import manage.store.user.repository.mapper.UserAccountMapper;
-import manage.store.util.UserUtils;
-import manage.store.user.servlet.UserApplication;
+import manage.store.DTO.entity.User;
+import manage.store.repository.mapper.UserAccountMapper;
+import manage.store.testUtils.UserUtils;
+import manage.store.servlet.UserApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -44,13 +44,13 @@ class UserAccountMapperTest {
     @Order(1)
     @DisplayName("select 성공")
     void selectUserById_success() {
-        // given
+        // Given
         User user = users[0];
 
-        // when
+        // When
         User dbUser = userAccountMapper.selectUserById(user.getId());
 
-        // then
+        // Then
         assertTrue(user.equals(dbUser));
     }
 
@@ -58,13 +58,13 @@ class UserAccountMapperTest {
     @Order(1)
     @DisplayName("select 실패")
     void selectUserById_fail_noUser() {
-        // given
+        // Given
         String noUserId = "noUserId";
 
-        // when
+        // When
         User dbUser = userAccountMapper.selectUserById(noUserId);
 
-        // then
+        // Then
         assertThat(dbUser).isNull();
     }
 
@@ -73,34 +73,34 @@ class UserAccountMapperTest {
     @Test
     @DisplayName("insertUser 성공")
     public void insertUser_success() {
-        // given
+        // Given
         User user = UserUtils.createUser("userId4");
 
-        // when
+        // When
         int result = userAccountMapper.insertUser(user);
 
-        // then
+        // Then
         assertEquals(1, result);
     }
 
     @Test
     @DisplayName("insertUser 실패 - 중복된 id(PK)")
     public void insertUser_fail_duplicateId_PK() {
-        // given
+        // Given
         User user = UserUtils.createUser("userId1");
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
     }
 
     @Test
     @DisplayName("insertUser 실패 - 중복된 email(UNIQUE)")
     public void insertUser_fail_duplicateEmail_UNIQUE() {
-        // given
+        // Given
         User user = UserUtils.createUser("userId4");
         user.setEmail(users[0].getEmail());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
         assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
@@ -108,11 +108,11 @@ class UserAccountMapperTest {
     @Test
     @DisplayName("insertUser 실패 - 중복된 phoneNo(UNIQUE)")
     public void insertUser_fail_duplicatePhoneNo_UNIQUE() {
-        // given
+        // Given
         User user = UserUtils.createUser("userId4");
         user.setPhoneNo(users[0].getPhoneNo());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
         assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
@@ -120,11 +120,11 @@ class UserAccountMapperTest {
     @Test
     @DisplayName("insertUser 실패 - 중복된 residentRegistNo(UNIQUE)")
     public void insertUser_fail_duplicateResidentRegistNo_UNIQUE() {
-        // given
+        // Given
         User user = UserUtils.createUser("userId4");
         user.setResidentRegistNo(users[0].getResidentRegistNo());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
         assertThat(userAccountMapper.selectUserById(user.getId())).isNull();
     }
@@ -133,13 +133,13 @@ class UserAccountMapperTest {
     @Test
     @DisplayName("updateUser 성공")
     public void updateUser_success() {
-        // given
+        // Given
         User user = UserUtils.createUser(users[0].getId());
 
-        // when
+        // When
         int result = userAccountMapper.updateUser(user);
 
-        // then
+        // Then
         assertEquals(1, result);
         assertTrue(user.equals(userAccountMapper.selectUserById(user.getId())));
     }
@@ -147,46 +147,46 @@ class UserAccountMapperTest {
     @Test
     @DisplayName("updateUser 실패 - 존재하지 않는 id")
     public void updateUser_fail_noUser() {
-        // given
+        // Given
         User user = UserUtils.createUser("noUserId");
 
-        // when
+        // When
         int result = userAccountMapper.updateUser(user);
 
-        // then
+        // Then
         assertEquals(0, result);
     }
 
     @Test
     @DisplayName("updateUser 실패 - 중복된 email(UNIQUE)")
     public void updateUser_fail_duplicateEmail_UNIQUE() {
-        // given
+        // Given
         User user = users[0];
         user.setEmail(users[1].getEmail());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 
     @Test
     @DisplayName("updateUser 실패 - 중복된 phoneNo(UNIQUE)")
     public void updateUser_fail_duplicatePhoneNo_UNIQUE() {
-        // given
+        // Given
         User user = users[0];
         user.setPhoneNo(users[1].getPhoneNo());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 
     @Test
     @DisplayName("updateUser 실패 - 중복된 residentRegistNo(UNIQUE)")
     public void updateUser_fail_duplicateResidentRegistNo_UNIQUE() {
-        // given
+        // Given
         User user = users[0];
         user.setResidentRegistNo(users[1].getResidentRegistNo());
 
-        // when - then
+        // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.updateUser(user));
     }
 }
