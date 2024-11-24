@@ -28,7 +28,7 @@ public class LoginController {
      * Parameter의 유효성 검증에 실패한 Request 처리
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
-    public ResponseEntity<String> handleInvalidParameterRequest(RuntimeException e) {
+    public ResponseEntity<String> handleInvalidParameterRequest(Exception e) {
         return ResponseEntity.badRequest().body("올바른 정보를 입력하세요.");
     }
 
