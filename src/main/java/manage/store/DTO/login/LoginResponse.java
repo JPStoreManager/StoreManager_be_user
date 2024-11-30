@@ -1,15 +1,16 @@
 package manage.store.DTO.login;
 
 import lombok.Data;
+import manage.store.consts.SuccessFlag;
 
 @Data
 public class LoginResponse {
-    private final boolean logResult;
+    private final SuccessFlag loginResult;
     private final String msg;
 
-    public LoginResponse(boolean isSuccess) {
-        this.logResult = isSuccess;
+    public LoginResponse(SuccessFlag isSuccess) {
+        this.loginResult = isSuccess;
         // TODO 변경 필요
-        this.msg = isSuccess ? "로그인 성공" : "로그인 실패";
+        this.msg = isSuccess == SuccessFlag.Y ? "로그인 성공" : "로그인 실패";
     }
 }

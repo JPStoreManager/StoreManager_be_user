@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 
 public class SecretUtils {
 
-    private static final BCryptPasswordEncoder encryptor = new BCryptPasswordEncoder(8);
+    private static final BCryptPasswordEncoder encryptor = new BCryptPasswordEncoder();
 
     /**
      * 문자열를 암호화
@@ -25,5 +25,12 @@ public class SecretUtils {
      */
     public static Boolean verify(String rawStr, String standardStr) {
         return encryptor.matches(rawStr, standardStr);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(SecretUtils.encrypt("password1"));
+        System.out.println(SecretUtils.encrypt("password2"));
+        System.out.println(SecretUtils.encrypt("password3"));
+
     }
 }
