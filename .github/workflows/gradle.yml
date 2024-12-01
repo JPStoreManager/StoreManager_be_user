@@ -35,12 +35,17 @@ jobs:
         distribution: 'temurin'
 
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      uses: gradle/actions/setup-gradle@v4
       with:
+        # Gradle 버전 설정
+        gradle-version: "8.10.2"
         # Main 및 develop 브랜치에 대해서 Cache 업데이트
         cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+    - name: Check Gradle Version
+      run: |
+        ./gradlew --version
         
     - name: Build with Gradle Wrapper
       run: ./gradlew build
