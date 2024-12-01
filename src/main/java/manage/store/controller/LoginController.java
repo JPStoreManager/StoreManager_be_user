@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import manage.store.DTO.login.LoginRequest;
 import manage.store.DTO.login.LoginResponse;
+import manage.store.consts.Message;
 import manage.store.service.login.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class LoginController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse result = loginService.login(loginRequest);
 
-        return new ResponseEntity<>(new LoginResponse(result.isSuccess()), HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -29,7 +30,7 @@ public class LoginController {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<String> handleInvalidParameterRequest(Exception e) {
-        return ResponseEntity.badRequest().body("올바른 정보를 입력하세요.");
+        return ResponseEntity.badRequest().body(Message.LOGIN_FAIL);
     }
 
 }

@@ -1,9 +1,12 @@
 package manage.store.service;
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import manage.store.DTO.entity.User;
 import manage.store.DTO.login.LoginRequest;
 import manage.store.DTO.login.LoginResponse;
+import manage.store.consts.SuccessFlag;
+import manage.store.consts.Tags;
 import manage.store.repository.UserAccountRepository;
 import manage.store.service.login.LoginServiceImpl;
 import manage.store.testUtils.DtoValidationUtil;
@@ -12,12 +15,14 @@ import manage.store.utils.SecretUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Set;
 
@@ -26,9 +31,9 @@ import static org.mockito.Mockito.mockStatic;
 
 import static org.assertj.core.api.Assertions.*;
 
-
+@Tag(Tags.Test.UNIT)
 @ExtendWith({MockitoExtension.class})
-class LoginServiceImplTest extends ServiceTest{
+class LoginServiceImplTest {
 
     /** 타겟 외 임시로 given-then이 주어질 객체 */
     @Mock
@@ -38,17 +43,18 @@ class LoginServiceImplTest extends ServiceTest{
     @InjectMocks
     private LoginServiceImpl loginService;
 
-    /** Static class의 mock을 위한 MockedStatic */
-    private static final MockedStatic<SecretUtils> SecretUtilsMock = mockStatic(SecretUtils.class);
+    private static Validator validator;
 
     @BeforeAll
     static void setup() {
-        initValidator();
+        LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+        factoryBean.afterPropertiesSet();
+        validator = factoryBean;
     }
 
     /** login */
     @Test
-    @DisplayName("로그인 성공")
+    @DisplayName("login 성공")
     void loginTest_success() {
         // Given
         LoginRequest request = new LoginRequest("userId1", "password123");
@@ -56,18 +62,20 @@ class LoginServiceImplTest extends ServiceTest{
         User user = UserUtils.createUser(request.getId());
         given(userAccountRepository.selectUserById(user.getId())).willReturn(user);
 
-        SecretUtilsMock.when(() -> SecretUtils.verify(request.getPassword(), user.getPassword()))
-                .thenReturn(true);
+        try(MockedStatic<SecretUtils> SecretUtilsMock = mockStatic(SecretUtils.class)) {
+            SecretUtilsMock.when(() -> SecretUtils.verify(request.getPassword(), user.getPassword()))
+                    .thenReturn(true);
 
-        // When
-        LoginResponse response = loginService.login(request);
+            // When
+            LoginResponse response = loginService.login(request);
 
-        // Then
-        assertThat(response.isSuccess()).isTrue();
+            // Then
+            assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.Y);
+        }
     }
 
     @Test
-    @DisplayName("로그인 실패 - 존재하지 않는 사용자")
+    @DisplayName("login 실패 - 존재하지 않는 사용자")
     void loginTest_fail_UserNotExist() {
         // Given
         LoginRequest request = new LoginRequest("userId1", "password123");
@@ -78,11 +86,11 @@ class LoginServiceImplTest extends ServiceTest{
         LoginResponse response = loginService.login(request);
 
         // Then
-        assertThat(response.isSuccess()).isFalse();
+        assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.N);
     }
 
     @Test
-    @DisplayName("로그인 실패 - 비밀번호 불일치")
+    @DisplayName("login 실패 - 비밀번호 불일치")
     void loginTest_fail_IncorrectPassword() {
         // Given
         LoginRequest request = new LoginRequest("userId1", "password123");
@@ -90,18 +98,20 @@ class LoginServiceImplTest extends ServiceTest{
         User user = UserUtils.createUser(request.getId());
         given(userAccountRepository.selectUserById(user.getId())).willReturn(user);
 
-        SecretUtilsMock.when(() -> SecretUtils.verify(request.getPassword(), user.getPassword()))
-                .thenReturn(false);
+        try(MockedStatic<SecretUtils> SecretUtilsMock = mockStatic(SecretUtils.class)) {
+            SecretUtilsMock.when(() -> SecretUtils.verify(request.getPassword(), user.getPassword()))
+                    .thenReturn(false);
 
-        // When
-        LoginResponse response = loginService.login(request);
+            // When
+            LoginResponse response = loginService.login(request);
 
-        // Then
-        assertThat(response.isSuccess()).isFalse();
+            // Then
+            assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.N);
+        }
     }
-    
+
     @Test
-    @DisplayName("로그인 실패 - 유효하지 않은 parameter(id)")
+    @DisplayName("login 실패 - 유효하지 않은 parameter(id)")
     void loginTest_fail_invalidParameter_id() {
         // Given1
         LoginRequest request = new LoginRequest("", "password123");
@@ -115,7 +125,7 @@ class LoginServiceImplTest extends ServiceTest{
     }
 
     @Test
-    @DisplayName("로그인 실패 - 유효하지 않은 parameter(password)")
+    @DisplayName("login 실패 - 유효하지 않은 parameter(password)")
     void loginTest_fail_invalidParameter_password() {
         // Given2
         LoginRequest request = new LoginRequest("userId1", "");
@@ -129,7 +139,7 @@ class LoginServiceImplTest extends ServiceTest{
     }
 
     @Test
-    @DisplayName("로그인 실패 - 유효하지 않은 parameter(id, password)")
+    @DisplayName("login 실패 - 유효하지 않은 parameter(id, password)")
     void loginTest_fail_invalidParameter_id_password() {
         // Given3
         LoginRequest request = new LoginRequest("", "");

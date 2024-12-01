@@ -1,13 +1,10 @@
-package manage.store.repository;
+package manage.store.repository.mapper;
 
 import manage.store.DTO.entity.User;
-import manage.store.repository.mapper.UserAccountMapper;
+import manage.store.consts.Tags;
 import manage.store.testUtils.UserUtils;
 import manage.store.servlet.UserApplication;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+@Tag(Tags.Test.UNIT)
 @MybatisTest
 @ContextConfiguration(classes = UserApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -42,7 +40,7 @@ class UserAccountMapperTest {
     /** select */
     @Test
     @Order(1)
-    @DisplayName("select 성공")
+    @DisplayName("selectUserById 성공")
     void selectUserById_success() {
         // Given
         User user = users[0];
@@ -56,7 +54,7 @@ class UserAccountMapperTest {
 
     @Test
     @Order(1)
-    @DisplayName("select 실패")
+    @DisplayName("selectUserById 실패 - user")
     void selectUserById_fail_noUser() {
         // Given
         String noUserId = "noUserId";
