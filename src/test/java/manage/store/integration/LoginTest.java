@@ -2,28 +2,33 @@ package manage.store.integration;
 
 import com.google.gson.Gson;
 import manage.store.DTO.login.LoginRequest;
-import manage.store.config.WebConfiguration;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
-import manage.store.controller.LoginController;
 import manage.store.data.UserData;
 import manage.store.repository.mapper.UserAccountMapper;
-import manage.store.service.login.LoginServiceImpl;
 import manage.store.servlet.UserApplication;
+import manage.store.testUtils.MockMvcUtils;
+import manage.store.utils.ApiPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,34 +36,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag(Tags.Test.INTEGRATION)
 @Transactional
 @SpringBootTest(classes = UserApplication.class)
-@Import(WebConfiguration.class)
-@ContextConfiguration(classes = { WebConfiguration.class})
-public class LoginTest {
+@ExtendWith({RestDocumentationExtension.class})
+public class LoginTest extends BaseIntegration {
 
-    public static final String LOGIN_PATH = "/login";
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private LoginServiceImpl loginService;
+    private static final String LOGIN_PATH = ApiPathUtils.getPath(ApiPathUtils.ApiName.LOGIN);
 
     @Autowired
     private UserAccountMapper userAccountMapper;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private WebApplicationContext context;
+
+    private MockMvc mockMvc;
+
 
     @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new LoginController(loginService))
-                .build();
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = setMockMvc(context, restDocumentation);
 
         userAccountMapper.insertUser(UserData.user1);
-
-        for (String beanDefinitionName : applicationContext.getBeanDefinitionNames()) {
-//            System.out.println(beanDefinitionName);
-        }
     }
+
 
     @Test
     @DisplayName("login 성공")
@@ -69,12 +67,15 @@ public class LoginTest {
         request.setPassword("password1");
 
         Gson gson = new Gson();
+
         // When - Then
-        mockMvc.perform(post(LOGIN_PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(request)))
+        ResultActions result = mockMvc.perform(post(LOGIN_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.loginResult").value(SuccessFlag.Y.getValue()));
+
+        addDocs(result);
     }
 
     @Test
@@ -110,6 +111,22 @@ public class LoginTest {
                         .content(gson.toJson(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.loginResult").value(SuccessFlag.N.getValue()));
+    }
+
+    @Override
+    protected void addDocs(ResultActions result) throws Exception {
+        ConstrainedFields reqFields = new ConstrainedFields(LoginRequest.class);
+
+        result.andDo(document("login",
+            requestFields(
+                fieldWithPath("id").type(JsonFieldType.STRING).description("사용자 아이디"),
+                fieldWithPath("password").type(JsonFieldType.STRING).description("사용자 비밀번호")
+            ),
+            responseFields(
+                fieldWithPath("loginResult").type(JsonFieldType.STRING).description("로그인 성공 여부"),
+                fieldWithPath("msg").type(JsonFieldType.STRING).description("로그인 결과 메시지")
+            )
+        ));
     }
 
 }

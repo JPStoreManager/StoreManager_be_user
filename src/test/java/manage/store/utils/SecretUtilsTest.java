@@ -1,7 +1,6 @@
-package manage.store.util;
+package manage.store.utils;
 
 
-import manage.store.utils.SecretUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

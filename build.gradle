@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'manage'
@@ -17,6 +18,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
 }
 
 repositories {
@@ -38,6 +40,9 @@ dependencies {
 	implementation 'org.flywaydb:flyway-mysql'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation group: 'com.google.guava', name: 'guava', version: '33.3.1-jre'
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
 	compileOnly 'org.projectlombok:lombok'
 
@@ -55,15 +60,30 @@ dependencies {
 
 }
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
 test {
+	useJUnitPlatform()
 	// 테스트 실행 시 콘솔에 표준 출력 및 표준 에러를 보여줍니다.
 	testLogging {
 		showStandardStreams = true
 		// 또는 아래와 같이 이벤트를 설정하여 특정 단계에서 로그를 출력할 수 있습니다.
 		events "passed", "skipped", "failed", "standardOut", "standardError"
 	}
+	outputs.dir snippetsDir
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+asciidoctor {
+	dependsOn test
+	configurations 'asciidoctorExt'
+	inputs.dir snippetsDir
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
 }

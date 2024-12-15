@@ -14,10 +14,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginController implements BaseController{
 
     private final LoginService loginService;
 
+    /**
+     * 로그인
+     * @param loginRequest 사용자 계정 정보 <br>
+     *                     id {@code String, Mandatory}: 사용자 아이디 <br>
+     *                     password {@code String, Mandatory}: 사용자 비밀번호 <br>
+     * @return LoginResponse 로그인 결과 <br>
+     *                       loginResult {@code SuccessFlag}: 로그인 성공 여부 <br>
+     *                       msg {@code String}: 로그인 결과 메시지
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse result = loginService.login(loginRequest);
@@ -30,7 +39,7 @@ public class LoginController {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<String> handleInvalidParameterRequest(Exception e) {
-        return ResponseEntity.badRequest().body(Message.LOGIN_FAIL);
+        return ResponseEntity.badRequest().body(Message.LOGIN_FAIL_INVALID_PARAM);
     }
 
 }
