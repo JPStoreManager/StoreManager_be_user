@@ -20,6 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.io.File;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -28,12 +33,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag(Tags.Test.INTEGRATION)
+@Testcontainers
 @Transactional
 @SpringBootTest(classes = UserApplication.class)
 @ExtendWith({RestDocumentationExtension.class})
 public class LoginTest extends BaseIntegration {
 
     private static final String LOGIN_PATH = ApiPathUtils.getPath(ApiPathUtils.ApiName.LOGIN);
+
+    /** Docker container for Test */
+    @Container
+    private static final DockerComposeContainer composeContainer = new DockerComposeContainer(new File("./docker-compose.yml"));
+    static {
+        composeContainer.start();
+    }
 
     @Autowired
     private UserAccountMapper userAccountMapper;
