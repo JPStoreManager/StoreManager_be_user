@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'manage'
-version = '0.0.1-SNAPSHOT'
+//version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
@@ -62,6 +62,7 @@ dependencies {
 
 ext {
 	snippetsDir = file('build/generated-snippets')
+	restDocsPath = file('src/main/resources/static/docs')
 }
 
 test {
@@ -77,13 +78,28 @@ test {
 
 asciidoctor {
 	dependsOn test
+
+	delete restDocsPath
+	delete "${asciidoctor.outputDir}"
+
 	configurations 'asciidoctorExt'
 	inputs.dir snippetsDir
 }
 
-bootJar {
+tasks.register('copyApiDocs', Copy) {
 	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") {
-		into 'static/docs'
+
+	from file("${asciidoctor.outputDir}")
+	into file("${restDocsPath}")
+}
+
+bootJar {
+	dependsOn copyApiDocs
+	from ("${asciidoctor.outputDir}") {
+		into "${restDocsPath}"
 	}
+}
+
+build {
+	dependsOn copyApiDocs
 }

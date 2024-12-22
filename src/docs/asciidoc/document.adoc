@@ -1,4 +1,9 @@
 = Api Documentation
+:sectnums:
+:toc: left
+:toclevels: 2
+:toc-title: API List
+:source-highlighter: prettify
 
 == Login
 
