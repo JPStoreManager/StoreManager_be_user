@@ -8,18 +8,15 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: 
-      - main
-      - develop
   pull_request:
+    types:
+      - opened
     branches: 
       - main
       - develop
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read

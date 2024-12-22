@@ -65,6 +65,13 @@ ext {
 	restDocsPath = file('src/main/resources/static/docs')
 }
 
+tasks.register('copyApiDocs', Copy) {
+	dependsOn asciidoctor
+
+	from file("${asciidoctor.outputDir}")
+	into file("${restDocsPath}")
+}
+
 test {
 	useJUnitPlatform()
 	// 테스트 실행 시 콘솔에 표준 출력 및 표준 에러를 보여줍니다.
@@ -86,17 +93,10 @@ asciidoctor {
 	inputs.dir snippetsDir
 }
 
-tasks.register('copyApiDocs', Copy) {
-	dependsOn asciidoctor
-
-	from file("${asciidoctor.outputDir}")
-	into file("${restDocsPath}")
-}
-
 bootJar {
-	dependsOn copyApiDocs
+	dependsOn asciidoctor
 	from ("${asciidoctor.outputDir}") {
-		into "${restDocsPath}"
+		into 'static/docs'
 	}
 }
 
