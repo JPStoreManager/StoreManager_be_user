@@ -7,12 +7,8 @@ import manage.store.consts.Tags;
 import manage.store.data.UserData;
 import manage.store.repository.mapper.UserAccountMapper;
 import manage.store.servlet.UserApplication;
-import manage.store.testUtils.MockMvcUtils;
 import manage.store.utils.ApiPathUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,12 +18,10 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,14 +45,15 @@ public class LoginTest extends BaseIntegration {
 
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = setMockMvc(context, restDocumentation);
+    public void setUp(TestInfo testInfo, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = getMockMvc(testInfo, context, restDocumentation);
 
         userAccountMapper.insertUser(UserData.user1);
     }
 
 
     @Test
+    @Tag(Tags.Test.DOCS)
     @DisplayName("login 성공")
     public void loginTest_success() throws Exception {
         // Given
@@ -115,8 +110,6 @@ public class LoginTest extends BaseIntegration {
 
     @Override
     protected void addDocs(ResultActions result) throws Exception {
-        ConstrainedFields reqFields = new ConstrainedFields(LoginRequest.class);
-
         result.andDo(document("login",
             requestFields(
                 fieldWithPath("id").type(JsonFieldType.STRING).description("사용자 아이디"),
