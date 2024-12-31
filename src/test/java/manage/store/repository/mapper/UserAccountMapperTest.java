@@ -10,15 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @Tag(Tags.Test.UNIT)
+@Testcontainers
 @MybatisTest
 @ContextConfiguration(classes = UserApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserAccountMapperTest {
+
+    /** Docker container for Test */
+    @Container
+    private static final DockerComposeContainer composeContainer = new DockerComposeContainer(new File("./docker-compose.yml"));
+    static {
+        composeContainer.start();
+    }
 
     @Autowired
     private UserAccountMapper userAccountMapper;
