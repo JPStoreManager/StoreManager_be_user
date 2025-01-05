@@ -1,9 +1,9 @@
 package manage.store.repository.mapper;
 
 import manage.store.DTO.entity.User;
+import manage.store.config.DBConfiguration;
 import manage.store.consts.Tags;
 import manage.store.testUtils.UserUtils;
-import manage.store.servlet.UserApplication;
 import org.junit.jupiter.api.*;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 @Tag(Tags.Test.UNIT)
 @Testcontainers
 @MybatisTest
-@ContextConfiguration(classes = UserApplication.class)
+@ContextConfiguration(classes = DBConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserAccountMapperTest {
 

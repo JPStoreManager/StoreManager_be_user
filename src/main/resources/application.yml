@@ -1,14 +1,17 @@
 spring:
   application:
     name: storeManager
+
   web:
     resources:
       add-mappings: false
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   flyway:
     enabled: true
     url: ${DB_URL}
@@ -17,6 +20,24 @@ spring:
     baseline-on-migrate: true
     baseline-version: 1
     default-schema: store_manager
+
+  mail:
+    port: 465
+    host: smtp.gmail.com
+    protocol: smtp
+    username: ${GOOGLE_EMAIL}
+    password: ${GOOGLE_APP_PW}
+    properties:
+      "[mail.transport.protocol]": smtp
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+      "[mail.smtp.timeout]": 3000
+      "[mail.smtp.writetimeout]": 5000
+
 server:
   servlet:
     context-path: /user
+
+email:
+  from: JumpingParkManager@gmail.com
+  title-prefix: [JumpingParkManager]

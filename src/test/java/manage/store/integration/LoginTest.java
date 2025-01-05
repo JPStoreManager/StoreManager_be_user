@@ -6,7 +6,7 @@ import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
 import manage.store.data.UserData;
 import manage.store.repository.mapper.UserAccountMapper;
-import manage.store.servlet.UserApplication;
+import manage.store.UserApplication;
 import manage.store.utils.ApiPathUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,7 +81,7 @@ public class LoginTest extends BaseIntegration {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.loginResult").value(SuccessFlag.Y.getValue()));
+                .andExpect(jsonPath("$.result").value(SuccessFlag.Y.getValue()));
 
         addDocs(result);
     }
@@ -100,7 +100,7 @@ public class LoginTest extends BaseIntegration {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.loginResult").value(SuccessFlag.N.getValue()));
+                .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class LoginTest extends BaseIntegration {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.loginResult").value(SuccessFlag.N.getValue()));
+                .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class LoginTest extends BaseIntegration {
                 fieldWithPath("password").type(JsonFieldType.STRING).description("사용자 비밀번호")
             ),
             responseFields(
-                fieldWithPath("loginResult").type(JsonFieldType.STRING).description("로그인 성공 여부"),
+                fieldWithPath("result").type(JsonFieldType.STRING).description("로그인 성공 여부"),
                 fieldWithPath("msg").type(JsonFieldType.STRING).description("로그인 결과 메시지")
             )
         ));

@@ -24,7 +24,7 @@ public class LoginController implements BaseController{
      *                     id {@code String, Mandatory}: 사용자 아이디 <br>
      *                     password {@code String, Mandatory}: 사용자 비밀번호 <br>
      * @return LoginResponse 로그인 결과 <br>
-     *                       loginResult {@code SuccessFlag}: 로그인 성공 여부 <br>
+     *                       result {@code SuccessFlag}: 로그인 성공 여부 <br>
      *                       msg {@code String}: 로그인 결과 메시지
      */
     @PostMapping("/login")

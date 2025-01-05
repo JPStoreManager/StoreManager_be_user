@@ -1,4 +1,4 @@
-package manage.store.service;
+package manage.store.service.login;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -8,7 +8,6 @@ import manage.store.DTO.login.LoginResponse;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
 import manage.store.repository.UserAccountRepository;
-import manage.store.service.login.LoginServiceImpl;
 import manage.store.testUtils.DtoValidationUtil;
 import manage.store.testUtils.UserUtils;
 import manage.store.utils.SecretUtils;
@@ -70,7 +69,7 @@ class LoginServiceImplTest {
             LoginResponse response = loginService.login(request);
 
             // Then
-            assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.Y);
+            assertThat(response.getResult()).isEqualTo(SuccessFlag.Y);
         }
     }
 
@@ -86,7 +85,7 @@ class LoginServiceImplTest {
         LoginResponse response = loginService.login(request);
 
         // Then
-        assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.N);
+        assertThat(response.getResult()).isEqualTo(SuccessFlag.N);
     }
 
     @Test
@@ -106,7 +105,7 @@ class LoginServiceImplTest {
             LoginResponse response = loginService.login(request);
 
             // Then
-            assertThat(response.getLoginResult()).isEqualTo(SuccessFlag.N);
+            assertThat(response.getResult()).isEqualTo(SuccessFlag.N);
         }
     }
 

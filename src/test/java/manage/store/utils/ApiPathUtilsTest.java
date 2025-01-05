@@ -1,13 +1,16 @@
 package manage.store.utils;
 
 import manage.store.config.WebConfiguration;
+import manage.store.consts.Tags;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ApiPathUtilsTest {
+@Tag(Tags.Test.UNIT)
+public class ApiPathUtilsTest {
 
     @Test
     @DisplayName("getPath 성공")

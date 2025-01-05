@@ -18,7 +18,7 @@ public class DBConfiguration {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setMapperLocations(resolver.getResources("classpath:mapper/user/*.xml"));
+        factoryBean.setMapperLocations(resolver.getResources("classpath:mapper/*.xml"));
         factoryBean.setTypeAliasesPackage("manage.store.DTO.entity");
         SqlSessionFactory sqlSessionFactory = factoryBean.getObject();
         if(sqlSessionFactory != null) {
