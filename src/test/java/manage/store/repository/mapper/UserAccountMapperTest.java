@@ -2,6 +2,7 @@ package manage.store.repository.mapper;
 
 import manage.store.DTO.entity.User;
 import manage.store.config.DBConfiguration;
+import manage.store.consts.Profiles;
 import manage.store.consts.Tags;
 import manage.store.testUtils.UserUtils;
 import org.junit.jupiter.api.*;
@@ -9,6 +10,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -22,6 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 @Tag(Tags.Test.UNIT)
 @Testcontainers
 @MybatisTest
+@ActiveProfiles(Profiles.TEST)
 @ContextConfiguration(classes = DBConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserAccountMapperTest {

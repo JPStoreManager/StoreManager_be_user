@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import java.io.IOException;
 
@@ -35,13 +36,13 @@ class MailServiceTest {
         // Given
         final String email = "chickenman10@naver.com", otp = "123456";
 
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+        doNothing().when(mailSender).send(any(MimeMessagePreparator.class));
 
         // When
         mailService.sendOtpMail(email, otp);
 
         // Then
-        verify(mailSender).send(any(SimpleMailMessage.class));
+        verify(mailSender).send(any(MimeMessagePreparator.class));
     }
 
     @Test

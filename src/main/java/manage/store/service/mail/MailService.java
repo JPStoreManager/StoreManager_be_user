@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import manage.store.exception.InvalidParameterException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,7 +22,7 @@ public class MailService {
     @Value("${email.from}")
     private String systemEmail;
 
-    @Value("${email.title-prefix")
+    @Value("${email.title-prefix}")
     private String mailTitlePrefix;
 
     private final JavaMailSender mailSender;
@@ -42,13 +44,16 @@ public class MailService {
     }
 
     private void sendMail(String to, String subject, String msg) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setFrom(systemEmail);
-        mail.setTo(to);
-        mail.setSubject(mailTitlePrefix + subject);
-        mail.setText(msg);
+        MimeMessagePreparator preparator = (mimeMsg) -> {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, StandardCharsets.UTF_8.toString());
 
-        mailSender.send(mail);
+            helper.setFrom(systemEmail);
+            helper.setTo(to);
+            helper.setSubject(mailTitlePrefix + subject);
+            helper.setText(msg, true);
+        };
+
+        mailSender.send(preparator);
     }
 
 }

@@ -5,7 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import manage.store.DTO.base.BaseResponse;
+import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;

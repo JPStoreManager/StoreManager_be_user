@@ -1,9 +1,13 @@
 package manage.store.controller;
 
+import com.google.gson.Gson;
+import manage.store.DTO.entity.User;
+import manage.store.DTO.login.LoginRequest;
 import manage.store.DTO.login.LoginResponse;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
+import manage.store.data.UserData;
 import manage.store.service.login.LoginService;
 import manage.store.testUtils.MockMvcUtils;
 import manage.store.utils.ApiPathUtils;
@@ -48,26 +52,60 @@ public class LoginControllerTest {
     @DisplayName("login 성공")
     public void loginTest_success() throws Exception {
         // Given
+        final User user = UserData.user1;
+        final LoginRequest request = new LoginRequest(user.getId(), user.getPassword());
+
         given(loginService.login(any())).willReturn(new LoginResponse(SuccessFlag.Y));
 
         // When - then
-         mock.perform(post(LOGIN_PATH)
+        Gson gson = new Gson();
+        mock.perform(post(LOGIN_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":\"userId1\", \"password\":\"password123\"}"))
+                .content(gson.toJson(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(SuccessFlag.Y.getValue()));
+    }
+
+    @Test
+    @DisplayName("login 실패 - 잘못된 사용자 아이디 / 비밀번호")
+    public void loginTest_fail_invalidParameter() throws Exception {
+        // Given
+        final User user = UserData.user1;
+        final LoginRequest[] loginRequests = {
+                new LoginRequest(" ", user.getPassword()),
+                new LoginRequest("", user.getPassword()),
+                new LoginRequest(null, user.getPassword()),
+
+                new LoginRequest(user.getId(), " "),
+                new LoginRequest(user.getId(), ""),
+                new LoginRequest(user.getId(), null)
+        };
+
+        // When - then
+        Gson gson = new Gson();
+        for (LoginRequest request : loginRequests) {
+            mock.perform(post(LOGIN_PATH)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(gson.toJson(request)))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+        }
     }
 
     @Test
     @DisplayName("login 실패 - 존재하지 않는 사용자 / 비밀번호 불일치")
     public void loginTest_fail_notValidParameter() throws Exception {
         // Given
+        final User user = UserData.user1;
+        final LoginRequest request = new LoginRequest(user.getId(), user.getPassword());
+
         given(loginService.login(any())).willReturn(new LoginResponse(SuccessFlag.N));
 
         // When - then
+        Gson gson = new Gson();
         mock.perform(post(LOGIN_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":\"userId1\", \"password\":\"password123\"}"))
+                        .content(gson.toJson(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
     }

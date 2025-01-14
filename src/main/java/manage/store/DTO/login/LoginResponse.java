@@ -1,6 +1,6 @@
 package manage.store.DTO.login;
 
-import manage.store.DTO.base.BaseResponse;
+import manage.store.DTO.common.BaseResponse;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
 

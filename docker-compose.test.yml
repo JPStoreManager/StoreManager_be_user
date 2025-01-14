@@ -1,0 +1,14 @@
+# TODO [멀티 모듈 프로젝트] 멀티 모듈 프로젝트로 전환 시 수정 필요
+version: '3.8'
+services:
+  user:
+    #    container_name은 test container에서 지원하지 않음
+    #    container_name: store-manager-user
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: store-manager
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env

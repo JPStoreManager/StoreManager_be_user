@@ -11,7 +11,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.DockerComposeContainer;
 
+import java.io.File;
 import java.util.Set;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -35,18 +37,36 @@ abstract public class BaseIntegration {
         }
     }
 
+    /** ------------------------------------------------------------------- */
+
+    /**
+     * Spring Rest Docs 작성을 위한 문서 코드 작성 강제
+     */
     protected abstract void addDocs(ResultActions result) throws Exception;
 
+    /** ------------------------------------------------------------------- */
+
+    /**
+     * Class / function에 달려있는 태그를 확인해서 Spring Rest Docs용인지 일반 Test인지 확인하고 용도에 맞는 mockMvc 반환
+     * @param testInfo 해당 테스트 정보
+     */
     protected MockMvc getMockMvc(TestInfo testInfo, WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         if(isTestForDocs(testInfo.getTags())) return getDocsMockMvc(context, restDocumentation);
         else return getPureMockMvc(context);
     }
 
+    /**
+     * 단위 테스트용 mockMvc 반환
+     */
     private MockMvc getPureMockMvc(WebApplicationContext context) {
         return MockMvcUtils.configureDefaultMockMvc(context).build();
     }
 
     // TODO 추후 개발 서버 생성 시 URL 삽입
+
+    /**
+     * Spring Rest Docs용 MockMvc 반환
+     */
     private MockMvc getDocsMockMvc(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         return ((DefaultMockMvcBuilder)(MockMvcUtils.configureDefaultMockMvc(context)))
                 .apply(documentationConfiguration(restDocumentation)
@@ -74,5 +94,16 @@ abstract public class BaseIntegration {
         }
         return false;
     }
+
+    /** ------------------------------------------------------------------- */
+
+    /**
+     * Test용 Docker Compose Container 생성 및 반환
+     */
+    protected static DockerComposeContainer getDockerComposeContainer() {
+        return new DockerComposeContainer(new File("./docker-compose.test.yml"));
+    }
+
+    /** ------------------------------------------------------------------- */
 
 }

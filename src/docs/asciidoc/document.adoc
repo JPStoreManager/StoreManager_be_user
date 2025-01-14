@@ -1,7 +1,7 @@
 = Api Documentation
 :sectnums:
 :toc: left
-:toclevels: 2
+:toclevels: 3
 :toc-title: API List
 :source-highlighter: prettify
 
@@ -21,3 +21,21 @@ include::{snippets}/login/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/login/response-fields.adoc[]
+
+== Find Password
+
+=== 1. Send Otp
+
+include::{snippets}/findPassword/sendOtp/curl-request.adoc[]
+
+==== Http Request
+include::{snippets}/findPassword/sendOtp/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/findPassword/sendOtp/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/findPassword/sendOtp/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/findPassword/sendOtp/response-fields.adoc[]

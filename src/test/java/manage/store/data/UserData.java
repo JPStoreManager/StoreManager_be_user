@@ -2,14 +2,19 @@ package manage.store.data;
 
 import manage.store.DTO.entity.User;
 
+/**
+ * Test용 임의 데이터
+ */
 public class UserData {
+    private static final String email = "JumpingParkManager@gmail.com";
+
     public static User user1 = User.builder()
             .id("testerId1")
             .password("$2a$10$GSis.dob/tMyiVXui7UNDOI5hlcnvbL3ryW8kIaGT7D31FcKK2OI.")
             .name("테스트1")
             .residentRegistNo("1231231231231")
             .phoneNo("11111111111")
-            .email("tester1@test.com")
+            .email(email)
             .address("test address 1")
             .authCd("AUTH1")
             .workStartDate("2024-01-01")
@@ -30,7 +35,7 @@ public class UserData {
             .name("테스트2")
             .residentRegistNo("1234123412")
             .phoneNo("22222222222")
-            .email("tester2@test.com")
+            .email(email)
             .address("test address 2")
             .authCd("AUTH2")
             .workStartDate("2024-02-01")
@@ -51,7 +56,7 @@ public class UserData {
             .name("테스트3")
             .residentRegistNo("12345123451")
             .phoneNo("33333333333")
-            .email("tester3@test.com")
+            .email(email)
             .address("test address 3")
             .authCd("AUTH3")
             .workStartDate("2024-03-01")

@@ -6,7 +6,9 @@ import manage.store.config.WebConfiguration;
 public class ApiPathUtils {
 
     public enum ApiName {
-        LOGIN("login");
+        LOGIN("login"),
+        FIND_PW_SEND_OTP("findPw_sendOtp"),
+        ;
 
         private String name;
 
@@ -30,6 +32,7 @@ public class ApiPathUtils {
 
     private static final ImmutableMap<ApiName, String> apiPathByName = ImmutableMap.<ApiName, String>builder()
             .put(ApiName.LOGIN, WebConfiguration.getContextPath() + "/login")
+            .put(ApiName.FIND_PW_SEND_OTP, WebConfiguration.getContextPath() + "/find/pw/sendOtp")
             .build();
 
     /**

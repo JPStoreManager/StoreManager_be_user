@@ -1,12 +1,13 @@
 package manage.store.integration;
 
 import com.google.gson.Gson;
+import manage.store.DTO.entity.User;
 import manage.store.DTO.login.LoginRequest;
+import manage.store.consts.Profiles;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
 import manage.store.data.UserData;
-import manage.store.repository.mapper.UserAccountMapper;
-import manage.store.UserApplication;
+import manage.store.repository.UserAccountRepository;
 import manage.store.utils.ApiPathUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.io.File;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -35,33 +35,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag(Tags.Test.INTEGRATION)
 @Testcontainers
 @Transactional
-@SpringBootTest(classes = UserApplication.class)
+@SpringBootTest
+@ActiveProfiles(Profiles.TEST)
 @ExtendWith({RestDocumentationExtension.class})
 public class LoginTest extends BaseIntegration {
 
     private static final String LOGIN_PATH = ApiPathUtils.getPath(ApiPathUtils.ApiName.LOGIN);
 
-    /** Docker container for Test */
+    /**
+     * Docker container for Test
+     */
     @Container
-    private static final DockerComposeContainer composeContainer = new DockerComposeContainer(new File("./docker-compose.yml"));
+    private static final DockerComposeContainer composeContainer = getDockerComposeContainer();
     static {
         composeContainer.start();
     }
 
     @Autowired
-    private UserAccountMapper userAccountMapper;
+    private UserAccountRepository userAccountRepository;
 
     @Autowired
     private WebApplicationContext context;
 
     private MockMvc mockMvc;
 
+    private final User user = UserData.user1;
+
 
     @BeforeEach
     public void setUp(TestInfo testInfo, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = getMockMvc(testInfo, context, restDocumentation);
 
-        userAccountMapper.insertUser(UserData.user1);
+        userAccountRepository.insertUser(user);
     }
 
 
@@ -71,7 +76,7 @@ public class LoginTest extends BaseIntegration {
     public void loginTest_success() throws Exception {
         // Given
         LoginRequest request = new LoginRequest();
-        request.setId("testerId1");
+        request.setId(user.getId());
         request.setPassword("password1");
 
         Gson gson = new Gson();
@@ -108,7 +113,7 @@ public class LoginTest extends BaseIntegration {
     public void loginTest_fail_passwordNotMatch() throws Exception {
         // Given
         LoginRequest request = new LoginRequest();
-        request.setId("testerId1");
+        request.setId(user.getId());
         request.setPassword("password2");
 
         Gson gson = new Gson();

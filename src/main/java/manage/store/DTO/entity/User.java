@@ -2,6 +2,7 @@ package manage.store.DTO.entity;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import manage.store.consts.Const;
 
 import java.util.Objects;
 
@@ -11,16 +12,16 @@ import java.util.Objects;
 @Builder
 @ToString
 public class User {
-    @NotEmpty(message = "id는 공란일 수 없습니다.")
+    @NotBlank(message = "id는 공란일 수 없습니다.")
     @Size(min = 1, max = 30, message = "id는 1자리 이상 30자리 이하입니다.")
     private String id;
 
-    @NotEmpty(message = "password는 공란일 수 없습니다.")
+    @NotBlank(message = "password는 공란일 수 없습니다.")
     @Size(min = 8, message = "password는 최소 8자리 이상입니다.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Za-z])[A-Za-z0-9]+$", message = "password는 영문자와 숫자를 각각 최소 1개 이상 보유해야 합니다.")
     private String password;
 
-    @NotEmpty(message = "name은 공란일 수 없습니다.")
+    @NotBlank(message = "name은 공란일 수 없습니다.")
     @Size(min = 2, max = 5, message = "name은 최소 2자리 이상 최대 5자리 미만입니다.")
     private String name;
 
@@ -31,22 +32,22 @@ public class User {
     private String phoneNo;
 
     @Size(max = 100, message = "email은 최대 100자 이하입니다.")
-    @Email(message = "email은 email 형식에 맞게 작성해야 합니다.")
+    @Email(regexp = Const.emailRegex, message = "email은 email 형식에 맞게 작성해야 합니다.")
     private String email;
 
     @Size(max = 200, message = "address은 최대 200자리 이하입니다.")
     private String address;
 
-    @NotEmpty(message = "authCd는 공란일 수 없습니다.")
+    @NotBlank(message = "authCd는 공란일 수 없습니다.")
     @Size(min = 1, max = 5, message = "authCd는 최소 1자리 이상 최대 5자리 이하여야 합니다.")
     private String authCd;
 
-    @NotEmpty(message = "workStartDate는 공란일 수 없습니다.")
+    @NotBlank(message = "workStartDate는 공란일 수 없습니다.")
     private String workStartDate;
 
     private String workEndDate;
 
-    @NotEmpty(message = "workStatusCd는 공란일 수 없습니다.")
+    @NotBlank(message = "workStatusCd는 공란일 수 없습니다.")
     @Size(min = 1, max = 5, message = "workStatusCd는 최소 1자리 이상 최대 5자리 이하여야 합니다.")
     private String workStatusCd;
 
@@ -64,12 +65,12 @@ public class User {
 
     private String otp;
 
-    @NotEmpty(message = "createdBy는 공란일 수 없습니다.")
+    @NotBlank(message = "createdBy는 공란일 수 없습니다.")
     private String createdBy;
 
     private String createdDate;
 
-    @NotEmpty(message = "lastUpdatedBy는 공란일 수 없습니다.")
+    @NotBlank(message = "lastUpdatedBy는 공란일 수 없습니다.")
     private String lastUpdatedBy;
 
     private String lastUpdatedDate;

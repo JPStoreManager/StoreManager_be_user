@@ -1,9 +1,10 @@
 package manage.store.DTO.find;
 
 import lombok.*;
+import manage.store.exception.InvalidParameterException;
+import org.springframework.util.StringUtils;
 
 @Getter @Setter
-@NoArgsConstructor
 @ToString
 public class FindUserPwSession {
 
@@ -12,6 +13,15 @@ public class FindUserPwSession {
     private Step completedStep;
     private String userId;
     private String userEmail;
+
+    public FindUserPwSession(Step completedStep, String userId, String userEmail) {
+        if(completedStep == null || !StringUtils.hasText(userId) || !StringUtils.hasText(userEmail))
+            throw new InvalidParameterException("The parameter is invalid. " + completedStep + ", " + userId + ", " + userEmail);
+
+        this.completedStep = completedStep;
+        this.userId = userId;
+        this.userEmail = userEmail;
+    }
 
     /**
      * 다음 비밀번호 찾기의 Step을 조회한다.

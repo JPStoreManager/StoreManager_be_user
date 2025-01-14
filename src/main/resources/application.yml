@@ -2,6 +2,10 @@ spring:
   application:
     name: storeManager
 
+  config:
+    activate:
+      on-profile: dev
+
   web:
     resources:
       add-mappings: false
@@ -28,7 +32,7 @@ spring:
     username: ${GOOGLE_EMAIL}
     password: ${GOOGLE_APP_PW}
     properties:
-      "[mail.transport.protocol]": smtp
+      "[mail.smtp.ssl.enable]": true
       "[mail.smtp.auth]": true
       "[mail.smtp.starttls.enable]": true
       "[mail.smtp.timeout]": 3000
@@ -39,5 +43,54 @@ server:
     context-path: /user
 
 email:
-  from: JumpingParkManager@gmail.com
-  title-prefix: [JumpingParkManager]
+  from: "JumpingParkManager@gmail.com"
+  title-prefix: "[JumpingParkManager]"
+
+---
+spring:
+  application:
+    name: storeManager
+  config:
+    activate:
+      on-profile: test
+
+  web:
+    resources:
+      add-mappings: false
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  flyway:
+    enabled: true
+    url: ${DB_URL}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    baseline-on-migrate: true
+    baseline-version: 1
+    default-schema: store_manager
+
+  mail:
+    port: 465
+    host: smtp.gmail.com
+    protocol: smtp
+    username: ${GOOGLE_EMAIL}
+    password: ${GOOGLE_APP_PW}
+    properties:
+      "[mail.smtp.ssl.enable]": true
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+      "[mail.smtp.timeout]": 3000
+      "[mail.smtp.writetimeout]": 5000
+
+server:
+  servlet:
+    context-path: /user
+  port: 8081
+
+email:
+  from: "JumpingParkManager@gmail.com"
+  title-prefix: "[JumpingParkManager]"

@@ -1,6 +1,7 @@
 package manage.store.service.find;
 
-import manage.store.DTO.base.BaseResponse;
+import manage.store.DTO.common.BaseResponse;
+import manage.store.exception.InvalidParameterException;
 
 public interface FindUserService {
     /** 비밀번호 찾기 */
@@ -11,8 +12,9 @@ public interface FindUserService {
      * 계정이 존재한다면 OTP 전송. 실패 시 오류 메세지 반환
      * @param userId 사용자 아이디
      * @param userEmail 사용자 이메일
-     * @return result {@code SuccessFlag} - 계정 인증 성공 시 Y, 실패 시 N <br>
+     * @return result {@code SuccessFlag} - 계정 인증 성공 시 Y, 계정 인증 실패 / 메일 전송 실패 시 N <br>
      * msg {@code String} - 성공 / 실패에 대한 메세지
+     * @throws InvalidParameterException 사용자가 입력한 id와 email이 존재하지 않거나 유효하지 않을 경우
      */
     public BaseResponse sendOtp(String userId, String userEmail);
 
@@ -24,6 +26,7 @@ public interface FindUserService {
      * @param enteredOtp 사용자가 입력한 OTP 번호
      * @return result {@code SuccessFlag} - OTP 검증 성공 시 Y, 실패 시 N <br>
      * msg {@code String} - 성공 / 실패에 대한 메세지
+     *      * @throws InvalidParameterException 사용자가 입력한 id와 email이 존재하지 않거나 유효하지 않을 경우
      */
     public BaseResponse validateOtp(String userId, String userEmail, String enteredOtp);
 
@@ -36,6 +39,7 @@ public interface FindUserService {
      * @param changedPwd 사용자가 신규로 입력한 비밀번호
      * @return result {@code SuccessFlag} - 비밀번호 업데이트 성공 시 Y, 잘못된 비밀번호일 시 시 N <br>
      * msg {@code String} - 성공 / 실패에 대한 메세지
+     * @throws InvalidParameterException 사용자가 입력한 id와 email이 존재하지 않거나 유효하지 않을 경우
      */
     public BaseResponse updatePassword(String userId, String userEmail, String changedPwd);
 

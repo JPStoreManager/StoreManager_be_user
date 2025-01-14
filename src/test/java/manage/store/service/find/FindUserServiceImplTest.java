@@ -1,15 +1,17 @@
 package manage.store.service.find;
 
-import manage.store.DTO.base.BaseResponse;
+import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
+import manage.store.consts.Tags;
 import manage.store.data.UserData;
 import manage.store.exception.InvalidParameterException;
 import manage.store.repository.UserAccountRepository;
 import manage.store.service.mail.MailService;
 import manage.store.utils.SecretUtils;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockStatic;
 
+@Tag(Tags.Test.UNIT)
 @ExtendWith(MockitoExtension.class)
 class FindUserServiceImplTest {
 
