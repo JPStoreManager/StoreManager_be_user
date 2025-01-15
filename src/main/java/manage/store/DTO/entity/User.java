@@ -2,6 +2,9 @@ package manage.store.DTO.entity;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import manage.store.annotation.Password;
+import manage.store.annotation.UserEmail;
+import manage.store.annotation.UserId;
 import manage.store.consts.Const;
 
 import java.util.Objects;
@@ -12,13 +15,12 @@ import java.util.Objects;
 @Builder
 @ToString
 public class User {
-    @NotBlank(message = "id는 공란일 수 없습니다.")
-    @Size(min = 1, max = 30, message = "id는 1자리 이상 30자리 이하입니다.")
+
+    @UserId
     private String id;
 
-    @NotBlank(message = "password는 공란일 수 없습니다.")
-    @Size(min = 8, message = "password는 최소 8자리 이상입니다.")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Za-z])[A-Za-z0-9]+$", message = "password는 영문자와 숫자를 각각 최소 1개 이상 보유해야 합니다.")
+    @Size(max = 300, message = "password는 최대 300자리 이하입니다.")
+    @Password
     private String password;
 
     @NotBlank(message = "name은 공란일 수 없습니다.")
@@ -32,7 +34,7 @@ public class User {
     private String phoneNo;
 
     @Size(max = 100, message = "email은 최대 100자 이하입니다.")
-    @Email(regexp = Const.emailRegex, message = "email은 email 형식에 맞게 작성해야 합니다.")
+    @UserEmail
     private String email;
 
     @Size(max = 200, message = "address은 최대 200자리 이하입니다.")

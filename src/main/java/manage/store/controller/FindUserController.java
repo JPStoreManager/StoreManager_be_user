@@ -2,6 +2,7 @@ package manage.store.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.common.ParameterValidationFailResponse;
 import manage.store.DTO.find.FindPwSendOtpRequest;
@@ -11,10 +12,12 @@ import manage.store.consts.Message;
 import manage.store.exception.InvalidParameterException;
 import manage.store.service.find.FindUserService;
 import manage.store.service.session.FindUserPwSessionService;
+import manage.store.utils.ExceptionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequestMapping("/find")
 @RestController
 @RequiredArgsConstructor
@@ -52,6 +55,8 @@ public class FindUserController implements BaseController {
 
     @ExceptionHandler({InvalidParameterException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<BaseResponse> handleInvalidParameterException(Exception e) {
+        log.info("Invalid Parameter was inputted. Error Message: {}", ExceptionUtils.getExceptionErrorMsg(e));
+
         return ResponseEntity.badRequest().body(new ParameterValidationFailResponse(Message.FIND_PW_FAIL_INVALID_PARAM));
     }
 

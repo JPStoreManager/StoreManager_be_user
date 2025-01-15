@@ -1,9 +1,8 @@
 package manage.store.DTO.find;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import manage.store.consts.Const;
+import manage.store.annotation.UserEmail;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +13,7 @@ public class FindPwBaseRequest {
     @NotBlank
     protected String userId;
 
-    @Email(regexp = Const.emailRegex)
-    @NotBlank
+    @UserEmail
     protected String email;
 
 }

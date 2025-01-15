@@ -3,6 +3,7 @@ package manage.store.controller;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import manage.store.DTO.login.LoginRequest;
 import manage.store.DTO.login.LoginResponse;
 import manage.store.consts.Message;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class LoginController implements BaseController{
@@ -39,6 +41,8 @@ public class LoginController implements BaseController{
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<String> handleInvalidParameterRequest(Exception e) {
+        log.info("Invalid Parameter was inputted. Error Message: {}", e.getMessage());
+
         return ResponseEntity.badRequest().body(Message.LOGIN_FAIL_INVALID_PARAM);
     }
 

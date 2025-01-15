@@ -206,7 +206,7 @@ class FindUserServiceImplTest {
         final String userId = "tester", userEmail = "tester@gmail.com", pw = "qwer1234";
         final User user = UserData.user1;
         user.setId(userId);
-        user.setEmail(user.getEmail());
+        user.setEmail(userEmail);
 
         given(userAccountRepository.selectUserById(any())).willReturn(user);
         given(userAccountRepository.updateUser(user)).willReturn(1);
@@ -267,7 +267,7 @@ class FindUserServiceImplTest {
     void updatePassword_fail_wrongPassword() {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
-        final String[] passwords = { "123abc", "12345678", "abcdefgh", "@@@@####"};
+        final String[] passwords = { "@", "12345678", "abcdefgh", "@@@@####"};
         User user = UserData.user1;
         user.setId(userId);
         user.setEmail(email);
