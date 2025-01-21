@@ -52,7 +52,7 @@ public class LoginControllerTest {
     @DisplayName("login 성공")
     public void loginTest_success() throws Exception {
         // Given
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         final LoginRequest request = new LoginRequest(user.getId(), user.getPassword());
 
         given(loginService.login(any())).willReturn(new LoginResponse(SuccessFlag.Y));
@@ -70,7 +70,7 @@ public class LoginControllerTest {
     @DisplayName("login 실패 - 잘못된 사용자 아이디 / 비밀번호")
     public void loginTest_fail_invalidParameter() throws Exception {
         // Given
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         final LoginRequest[] loginRequests = {
                 new LoginRequest(" ", user.getPassword()),
                 new LoginRequest("", user.getPassword()),
@@ -96,7 +96,7 @@ public class LoginControllerTest {
     @DisplayName("login 실패 - 존재하지 않는 사용자 / 비밀번호 불일치")
     public void loginTest_fail_notValidParameter() throws Exception {
         // Given
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         final LoginRequest request = new LoginRequest(user.getId(), user.getPassword());
 
         given(loginService.login(any())).willReturn(new LoginResponse(SuccessFlag.N));

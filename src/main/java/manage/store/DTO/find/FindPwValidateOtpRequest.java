@@ -1,10 +1,15 @@
 package manage.store.DTO.find;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class FindPwValidateOtpRequest extends FindPwBaseRequest{
 
-    public FindPwValidateOtpRequest(String userId, String email) {
-        super(userId, email);
-    }
+    @NotBlank
+    private String otp;
 
     public FindPwValidateOtpRequest() {
         super();

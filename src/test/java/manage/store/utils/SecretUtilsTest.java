@@ -48,7 +48,7 @@ public class SecretUtilsTest {
     @DisplayName("createOtp 성공")
     public void createOtp_success() {
         // Given
-        int length = 6;
+        final int length = 6;
 
         // When - Then
         for (int i = 0; i < 5; i++) {
@@ -61,7 +61,7 @@ public class SecretUtilsTest {
     @DisplayName("createOtp 실패 - 0 이하의 length")
     public void createOtp_fail_lengthUnderOne() {
         // Given1
-        int length1 = 0;
+        final int length1 = 0;
 
         // When1 - Then1
         assertThrows(InvalidParameterException.class, () -> SecretUtils.createOtp(length1));

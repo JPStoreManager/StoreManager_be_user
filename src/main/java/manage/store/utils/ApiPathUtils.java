@@ -2,6 +2,7 @@ package manage.store.utils;
 
 import com.google.common.collect.ImmutableMap;
 import manage.store.config.WebConfiguration;
+import manage.store.exception.InvalidParameterException;
 
 public class ApiPathUtils {
 
@@ -42,7 +43,7 @@ public class ApiPathUtils {
      * @throws RuntimeException apiName이 null인 경우
      */
     public static String getPath(ApiName apiName) {
-        if(apiName == null) throw new IllegalArgumentException("apiName must not be null");
+        if(apiName == null) throw new InvalidParameterException("apiName must not be null");
 
         return apiPathByName.get(apiName);
     }

@@ -59,7 +59,7 @@ public class LoginTest extends BaseIntegration {
 
     private MockMvc mockMvc;
 
-    private final User user = UserData.user1;
+    private final User user = UserData.user1();
 
 
     @BeforeEach
@@ -75,7 +75,7 @@ public class LoginTest extends BaseIntegration {
     @DisplayName("login 성공")
     public void loginTest_success() throws Exception {
         // Given
-        LoginRequest request = new LoginRequest();
+        final LoginRequest request = new LoginRequest();
         request.setId(user.getId());
         request.setPassword("password1");
 
@@ -95,7 +95,7 @@ public class LoginTest extends BaseIntegration {
     @DisplayName("login 실패 - 존재하지 않는 아이디")
     public void loginTest_fail_notExistUser() throws Exception {
         // Given
-        LoginRequest request = new LoginRequest();
+        final LoginRequest request = new LoginRequest();
         request.setId("NotExistUserId");
         request.setPassword("password1");
 
@@ -112,7 +112,7 @@ public class LoginTest extends BaseIntegration {
     @DisplayName("login 실패 - 비밀번호 불일치")
     public void loginTest_fail_passwordNotMatch() throws Exception {
         // Given
-        LoginRequest request = new LoginRequest();
+        final LoginRequest request = new LoginRequest();
         request.setId(user.getId());
         request.setPassword("password2");
 

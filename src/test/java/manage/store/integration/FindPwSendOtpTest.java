@@ -57,7 +57,7 @@ public class FindPwSendOtpTest extends BaseIntegration {
 
     private MockMvc mockMvc;
 
-    private final User user = UserData.user1;
+    private final User user = UserData.user1();
 
     @BeforeEach
     public void setUp(TestInfo testInfo, RestDocumentationContextProvider restDocumentation) {
@@ -71,7 +71,7 @@ public class FindPwSendOtpTest extends BaseIntegration {
     @DisplayName("sendOtp 성공")
     public void sendOtp_success() throws Exception {
         // Given
-        FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
         request.setUserId(user.getId());
         request.setEmail(user.getEmail());
 
@@ -93,27 +93,30 @@ public class FindPwSendOtpTest extends BaseIntegration {
     @DisplayName("sendOtp 실패 - 잘못된 파라미터")
     public void sendOtp_fail_invalidParameter() throws Exception {
         // Given
-        FindPwSendOtpRequest[] requests = {
-                new FindPwSendOtpRequest(),
-                new FindPwSendOtpRequest(user.getId(), null),
-                new FindPwSendOtpRequest(user.getId(), ""),
-                new FindPwSendOtpRequest(user.getId(), " "),
+        final String[][] params = {
+                {null, null},
+                {user.getId(), null},
+                {user.getId(), ""},
+                {user.getId(), " "},
 
-                new FindPwSendOtpRequest(null, user.getEmail()),
-                new FindPwSendOtpRequest("", user.getEmail()),
-                new FindPwSendOtpRequest(" ", user.getEmail()),
+                {null, user.getEmail()},
+                {"", user.getEmail()},
+                {" ", user.getEmail()},
 
-                new FindPwSendOtpRequest(user.getId(), "wrongEmail"),
-                new FindPwSendOtpRequest(user.getId(), "wrongEmail@"),
-                new FindPwSendOtpRequest(user.getId(), "wrongEmail.com"),
-                new FindPwSendOtpRequest(user.getId(), "wrongEmail@.com"),
-                new FindPwSendOtpRequest(user.getId(), "@com"),
+                {user.getId(), "wrongEmail"},
+                {user.getId(), "wrongEmail@"},
+                {user.getId(), "wrongEmail.com"},
+                {user.getId(), "wrongEmail@.com"},
+                {user.getId(), "@com"},
         };
 
         // When - Then
-        for(FindPwSendOtpRequest request : requests) {
+        for(String[] param : params) {
+            final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+
             Gson gson = new Gson();
-            System.out.println(gson.toJson(request));
             mockMvc.perform(post(SEND_OTP_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(gson.toJson(request)))
@@ -126,7 +129,9 @@ public class FindPwSendOtpTest extends BaseIntegration {
     @DisplayName("sendOtp 실패 - 존재하지 않는 계정")
     public void sendOtp_fail_notExistUser() throws Exception {
         // Given
-        FindPwSendOtpRequest request = new FindPwSendOtpRequest("NotExistUserId", user.getEmail());
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId("notExistUser");
+        request.setEmail(user.getEmail());
 
         // When - Then
         Gson gson = new Gson();
@@ -141,7 +146,9 @@ public class FindPwSendOtpTest extends BaseIntegration {
     @DisplayName("sendOtp 실패 - 계정은 존재하지만 일치하지 않는 이메일")
     public void sendOtp_fail_notMatchEmail() throws Exception {
         // Given
-        FindPwSendOtpRequest request = new FindPwSendOtpRequest(user.getId(), "notMatchEmail");
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(user.getId());
+        request.setEmail("notMatchEmail@a.com");
 
         // When - Then
         Gson gson = new Gson();

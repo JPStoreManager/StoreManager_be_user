@@ -1,12 +1,13 @@
 package manage.store.service.find;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
+import manage.store.DTO.find.FindPwBaseRequest;
+import manage.store.DTO.find.FindPwSendOtpRequest;
+import manage.store.DTO.find.FindPwUpdatePwRequest;
+import manage.store.DTO.find.FindPwValidateOtpRequest;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
 import manage.store.exception.InvalidParameterException;
@@ -15,9 +16,9 @@ import manage.store.service.mail.MailService;
 import manage.store.utils.ExceptionUtils;
 import manage.store.utils.ReflectionUtils;
 import manage.store.utils.SecretUtils;
+import manage.store.validator.NewPasswordValidator;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
+import org.springframework.util.StringUtils;
 
 
 @Slf4j
@@ -30,12 +31,12 @@ public class FindUserServiceImpl implements FindUserService {
     private final MailService mailService;
 
     @Override
-    public BaseResponse sendOtp(String userId, String userEmail) {
+    public BaseResponse sendOtp(FindPwSendOtpRequest request) {
         // 1. 파라미터 검증
-        validateFindPwParam(userId, userEmail);
+        validateFindPwParam(request);
 
         // 2. OTP 생성 및 user에 업데이트
-        User user = userAccountRepository.selectUserById(userId);
+        User user = userAccountRepository.selectUserById(request.getUserId());
         String otp = SecretUtils.createOtp(6);
         user.setOtp(otp);
         userAccountRepository.updateUser(user);
@@ -55,31 +56,31 @@ public class FindUserServiceImpl implements FindUserService {
     }
 
     @Override
-    public BaseResponse validateOtp(String userId, String userEmail, String enteredOtp) {
+    public BaseResponse validateOtp(FindPwValidateOtpRequest request) {
         // 1. 파라미터 검증
-        validateFindPwParam(userId, userEmail);
+        validateFindPwParam(request);
 
         // 2. 계정에 저장된 OTP와 동일한지 확인
-        User user = userAccountRepository.selectUserById(userId);
+        User user = userAccountRepository.selectUserById(request.getUserId());
         String originOtp = user.getOtp();
-        boolean isOtpValid = originOtp.equals(enteredOtp);
+        boolean isOtpValid = originOtp.equals(request.getOtp());
 
         return new BaseResponse(isOtpValid ? SuccessFlag.Y : SuccessFlag.N,
                 isOtpValid ? Message.FIND_PW_VALIDATE_OTP_SUCCESS : Message.FIND_PW_VALIDATE_OTP_FAIL_NOT_VALID);
     }
 
     @Override
-    public BaseResponse updatePassword(String userId, String userEmail, String changedPwd) {
+    public BaseResponse updatePassword(FindPwUpdatePwRequest request) {
         // 1. 파라미터 검증
-        validateFindPwParam(userId, userEmail);
+        validateFindPwParam(request);
 
         // 2. 비밀번호 검증
-        User user = userAccountRepository.selectUserById(userId);
-        user.setPassword(changedPwd);
+        if(!NewPasswordValidator.isValid(request.getNewPassword()))
+            throw new InvalidParameterException("새로운 비밀번호가 형식에 맞지 않습니다.");
 
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Set<ConstraintViolation<User>> validationResult = validator.validateProperty(user, "password");
-        if(!validationResult.isEmpty()) return new BaseResponse(SuccessFlag.N, Message.FIND_PW_UPDATE_PW_FAIL_INVALID_PW);
+        // 3. 비밀번호 암호화하여 업데이트
+        User user = userAccountRepository.selectUserById(request.getUserId());
+        user.setPassword(SecretUtils.encrypt(request.getNewPassword()));
 
         // 3. OTP 초기화 및 비밀번호 업데이트
         user.setOtp(null);
@@ -88,13 +89,14 @@ public class FindUserServiceImpl implements FindUserService {
         return new BaseResponse(SuccessFlag.Y, Message.FIND_PW_UPDATE_PW_SUCCESS);
     }
 
-    private void validateFindPwParam(String userId, String userEmail) {
+    private void validateFindPwParam(FindPwBaseRequest request) {
         // 1. 파라미터 검증
-        if(userId == null || userEmail == null) throw new InvalidParameterException("UserId or Email is empty");
+        if(request == null ||
+                !StringUtils.hasText(request.getUserId()) || !StringUtils.hasText(request.getEmail())) throw new InvalidParameterException("UserId or Email is empty");
 
         // 2. 계정 존재 여부 확인 (아이디와 이메일 일치)
-        User user = userAccountRepository.selectUserById(userId);
-        if(user == null || !userEmail.equals(user.getEmail())) throw new InvalidParameterException("Not exist user");
+        User user = userAccountRepository.selectUserById(request.getUserId());
+        if(user == null || !request.getEmail().equals(user.getEmail())) throw new InvalidParameterException("Not exist user");
     }
 
 }

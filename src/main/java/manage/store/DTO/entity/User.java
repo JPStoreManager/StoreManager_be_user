@@ -1,14 +1,18 @@
 package manage.store.DTO.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import manage.store.annotation.Password;
+import lombok.extern.slf4j.Slf4j;
 import manage.store.annotation.UserEmail;
 import manage.store.annotation.UserId;
-import manage.store.consts.Const;
+import manage.store.validator.ValidatorUtils;
 
 import java.util.Objects;
+import java.util.Set;
 
+@Slf4j
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,8 +23,8 @@ public class User {
     @UserId
     private String id;
 
+    @NotBlank
     @Size(max = 300, message = "password는 최대 300자리 이하입니다.")
-    @Password
     private String password;
 
     @NotBlank(message = "name은 공란일 수 없습니다.")
@@ -97,6 +101,16 @@ public class User {
                 && Objects.equals(getBankAccountNo(), user.getBankAccountNo())
                 && Objects.equals(getMonthSalary(), user.getMonthSalary())
                 && Objects.equals(getHourWage(), user.getHourWage());
+    }
+
+    /**
+     * 현재 객체의 유효한 데이터를 가지고 있는 객체인지 검사
+     * @return true: 유효한 객체, false: 유효하지 않은 객체
+     */
+    public boolean isValid() {
+        Validator validator = ValidatorUtils.getDefaultValidator();
+        Set<ConstraintViolation<User>> validationResult = validator.validate(this);
+        return validationResult.isEmpty();
     }
 }
 

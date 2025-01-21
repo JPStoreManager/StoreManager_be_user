@@ -2,6 +2,9 @@ package manage.store.service.find;
 
 import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
+import manage.store.DTO.find.FindPwSendOtpRequest;
+import manage.store.DTO.find.FindPwUpdatePwRequest;
+import manage.store.DTO.find.FindPwValidateOtpRequest;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
@@ -49,10 +52,14 @@ class FindUserServiceImplTest {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
 
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
         final String otp = "otp123";
+
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
 
         given(userAccountRepository.selectUserById(userId)).willReturn(user);
         given(userAccountRepository.updateUser(user)).willReturn(1);
@@ -63,7 +70,7 @@ class FindUserServiceImplTest {
                     .thenReturn(otp);
 
             // When
-            BaseResponse result = findUserService.sendOtp(userId, email);
+            BaseResponse result = findUserService.sendOtp(request);
 
             // Then
             assertThat(result.getResult()).isEqualTo(SuccessFlag.Y);
@@ -76,14 +83,31 @@ class FindUserServiceImplTest {
     void sendOtp_fail_invalidUserIdOrEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
+        final String[][] params = {
+                {null, null},
+                {userId, null},
+                {userId, ""},
+                {userId, " "},
+
+                {null, email},
+                {"", email},
+                {" ", email},
+
+                {userId, "wrongEmail"},
+                {userId, "wrongEmail@"},
+                {userId, "wrongEmail.com"},
+                {userId, "wrongEmail@.com"},
+                {userId, "@com"},
+        };
 
         // When - Then
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(userId, null));
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(userId, ""));
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(userId, "  "));
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(null, email));
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp("", email));
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(" ", email));
+        for (String[] param : params) {
+            final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+
+            assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(request));
+        }
     }
 
     @Test
@@ -91,11 +115,14 @@ class FindUserServiceImplTest {
     void sendOtp_fail_notExistUser() {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
 
         given(userAccountRepository.selectUserById(any())).willReturn(null);
 
         // When
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(userId, email));
+        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(request));
     }
 
     @Test
@@ -103,14 +130,18 @@ class FindUserServiceImplTest {
     void sendOtp_fail_notMatchEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
-        User user = UserData.user1;
+        User user = UserData.user1();
         user.setId(userId);
         user.setEmail(user.getEmail() + "notSame");
+
+       final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
 
         given(userAccountRepository.selectUserById(any())).willReturn(user);
 
         // When
-        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(userId, email));
+        assertThrows(InvalidParameterException.class, () -> findUserService.sendOtp(request));
     }
 
 
@@ -120,15 +151,20 @@ class FindUserServiceImplTest {
     void validateOtp_success() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", otp = "otp123";
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
         user.setOtp(otp);
-        
+
+        final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setOtp(otp);
+
         given(userAccountRepository.selectUserById(userId)).willReturn(user);
-        
+
         // When
-        BaseResponse result = findUserService.validateOtp(userId, email, otp);
+        BaseResponse result = findUserService.validateOtp(request);
         
         // Then
         assertThat(result.getResult()).isEqualTo(SuccessFlag.Y);
@@ -140,14 +176,32 @@ class FindUserServiceImplTest {
     void validateOtp_fail_invalidUserIdOrEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", otp = "otp123";
+        final String[][] params = {
+                {null, null, otp},
+                {userId, null, otp},
+                {userId, "", otp},
+                {userId, " ", otp},
+
+                {null, email, otp},
+                {"", email, otp},
+                {" ", email, otp},
+
+                {userId, "wrongEmail", otp},
+                {userId, "wrongEmail@", otp},
+                {userId, "wrongEmail.com", otp},
+                {userId, "wrongEmail@.com", otp},
+                {userId, "@com", otp},
+        };
 
         // When - Then
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(userId, null, otp));
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(userId, "", otp));
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(userId, "  ", otp));
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(null, email, otp));
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp("", email, otp));
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(" ", email, otp));
+        for (String[] param : params) {
+            final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+            request.setOtp(param[2]);
+
+            assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(request));
+        }
     }
 
     @Test
@@ -155,11 +209,15 @@ class FindUserServiceImplTest {
     void validateOtp_fail_notExistUser() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", otp = "otp123";
+        final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setOtp(otp);
 
         given(userAccountRepository.selectUserById(any())).willReturn(null);
 
         // When
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(userId, email, otp));
+        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(request));
     }
 
     @Test
@@ -167,14 +225,17 @@ class FindUserServiceImplTest {
     void validateOtp_fail_notMatchEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", otp = "otp123";
-        User user = UserData.user1;
+        User user = UserData.user1();
         user.setId(userId);
         user.setEmail(user.getEmail() + "notSame");
 
-        given(userAccountRepository.selectUserById(any())).willReturn(user);
+        final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setOtp(otp);
 
         // When
-        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(userId, email, otp));
+        assertThrows(InvalidParameterException.class, () -> findUserService.validateOtp(request));
     }
 
     @Test
@@ -182,15 +243,20 @@ class FindUserServiceImplTest {
     void validateOtp_fail_invalidOtp() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", otp = "otp123";
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
         user.setOtp(otp + "notSame");
-        
+
+        final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setOtp(otp);
+
         given(userAccountRepository.selectUserById(any())).willReturn(user);
-        
+
         // When
-        BaseResponse result = findUserService.validateOtp(userId, email, otp);
+        BaseResponse result = findUserService.validateOtp(request);
         
         // Then
         assertThat(result.getResult()).isEqualTo(SuccessFlag.N);
@@ -204,15 +270,20 @@ class FindUserServiceImplTest {
     void updatePassword_success() {
         // Given
         final String userId = "tester", userEmail = "tester@gmail.com", pw = "qwer1234";
-        final User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(userEmail);
 
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(userId);
+        request.setEmail(userEmail);
+        request.setNewPassword(pw);
+
         given(userAccountRepository.selectUserById(any())).willReturn(user);
         given(userAccountRepository.updateUser(user)).willReturn(1);
-        
+
         // When
-        BaseResponse result = findUserService.updatePassword(userId, userEmail, pw);
+        BaseResponse result = findUserService.updatePassword(request);
         
         // Then
         assertThat(result.getResult()).isEqualTo(SuccessFlag.Y);
@@ -224,14 +295,32 @@ class FindUserServiceImplTest {
     void updatePassword_fail_invalidUserIdOrEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", pwd = "qwer1234";
+        final String[][] params = {
+                {null, null, pwd},
+                {userId, null, pwd},
+                {userId, "", pwd},
+                {userId, " ", pwd},
+
+                {null, email, pwd},
+                {"", email, pwd},
+                {" ", email, pwd},
+
+                {userId, "wrongEmail", pwd},
+                {userId, "wrongEmail@", pwd},
+                {userId, "wrongEmail.com", pwd},
+                {userId, "wrongEmail@.com", pwd},
+                {userId, "@com", pwd},
+        };
 
         // When - Then
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(userId, null, pwd));
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(userId, "", pwd));
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(userId, "  ", pwd));
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(null, email, pwd));
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword("", email, pwd));
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(" ", email, pwd));
+        for (String[] param : params) {
+            final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+            request.setNewPassword(param[2]);
+
+            assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(request));
+        }
     }
 
     @Test
@@ -239,11 +328,15 @@ class FindUserServiceImplTest {
     void updatePassword_fail_notExistUser() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", pwd = "qwer1234";
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setNewPassword(pwd);
 
         given(userAccountRepository.selectUserById(any())).willReturn(null);
 
         // When
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(userId, email, pwd));
+        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(request));
 
     }
 
@@ -252,14 +345,19 @@ class FindUserServiceImplTest {
     void updatePassword_fail_notMatchEmail() {
         // Given
         final String userId = "tester", email = "tester@gmail.com", pwd = "qwer1234";
-        User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(user.getEmail() + "notSame");
+
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(userId);
+        request.setEmail(email);
+        request.setNewPassword(pwd);
 
         given(userAccountRepository.selectUserById(any())).willReturn(user);
 
         // When - Then
-        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(userId, email, pwd));
+        assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(request));
     }
 
     @Test
@@ -268,7 +366,7 @@ class FindUserServiceImplTest {
         // Given
         final String userId = "tester", email = "tester@gmail.com";
         final String[] passwords = { "@", "12345678", "abcdefgh", "@@@@####"};
-        User user = UserData.user1;
+        final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
 
@@ -276,10 +374,12 @@ class FindUserServiceImplTest {
 
         // When - Then
         for (int i = 0; i < passwords.length; i++) {
-            BaseResponse baseResponse = findUserService.updatePassword(userId, email, passwords[i]);
+            FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+            request.setUserId(userId);
+            request.setEmail(email);
+            request.setNewPassword(passwords[i]);
 
-            assertThat(baseResponse.getResult()).isEqualTo(SuccessFlag.N);
-            assertThat(baseResponse.getMsg()).isEqualTo(Message.FIND_PW_UPDATE_PW_FAIL_INVALID_PW);
+            assertThrows(InvalidParameterException.class, () -> findUserService.updatePassword(request));
         }
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,11 +61,13 @@ class FindUserControllerTest {
     @DisplayName("sendOtp 성공")
     void sendOtp_success() throws Exception {
         // Given
-        final User user = UserData.user1;
-        final FindPwSendOtpRequest request = new FindPwSendOtpRequest(user.getId(), user.getEmail());
+        final User user = UserData.user1();
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
         final String SESSION_ID = "sessionKey";
 
-        given(findUserService.sendOtp(request.getUserId(), request.getEmail()))
+        given(findUserService.sendOtp(any()))
                 .willReturn(new BaseResponse(SuccessFlag.Y, Message.FIND_PW_SEND_OTP_SUCCESS));
 
         given(findUserPwSessionService.createSessionKey()).willReturn(SESSION_ID);
@@ -86,27 +89,31 @@ class FindUserControllerTest {
     @DisplayName("sendOtp 실패 - 유효하지 않은 파리미터")
     void sendOtp_fail_invalidParameters() throws Exception {
         // Given
-        final User user = UserData.user1;
-        final FindPwSendOtpRequest[] requests = {
-                new FindPwSendOtpRequest(null, null),
+        final User user = UserData.user1();
+        final String[][] params = {
+                {null, null},
 
-                new FindPwSendOtpRequest(user.getId(), null),
-                new FindPwSendOtpRequest(user.getId(), ""),
-                new FindPwSendOtpRequest(user.getId(), "  "),
+                {user.getId(), null},
+                {user.getId(), ""},
+                {user.getId(), "  "},
 
-                new FindPwSendOtpRequest(null, user.getEmail()),
-                new FindPwSendOtpRequest("", user.getEmail()),
-                new FindPwSendOtpRequest("  ", user.getEmail()),
+                {null, user.getEmail()},
+                {"", user.getEmail()},
+                {"  ", user.getEmail()},
 
-                new FindPwSendOtpRequest(user.getId(), "wrongEmail1"),
-                new FindPwSendOtpRequest(user.getId(), "wro@a"),
-                new FindPwSendOtpRequest(user.getId(), "wro@.c"),
-                new FindPwSendOtpRequest(user.getId(), "@abc.com"),
+                {user.getId(), "wrongEmail1"},
+                {user.getId(), "wro@a"},
+                {user.getId(), "wro@.c"},
+                {user.getId(), "@abc.com"},
         };
 
         // When - Then
         Gson gson = new Gson();
-        for (FindPwSendOtpRequest request : requests) {
+        for (String[] param : params) {
+            FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+
             mock.perform(post(SEND_OTP_PATH)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(gson.toJson(request)))
@@ -119,10 +126,12 @@ class FindUserControllerTest {
     @DisplayName("sendOtp 실패 - 존재하지 않는 계정")
     void sendOtp_fail_notExistUser() throws Exception {
         // Given
-        final User user = UserData.user1;
-        final FindPwSendOtpRequest request = new FindPwSendOtpRequest(user.getId(), user.getEmail());
+        final User user = UserData.user1();
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
 
-        given(findUserService.sendOtp(request.getUserId(), request.getEmail())).willThrow(new InvalidParameterException());
+        given(findUserService.sendOtp(any())).willThrow(new InvalidParameterException());
 
         // When - Then
         Gson gson = new Gson();
@@ -137,10 +146,12 @@ class FindUserControllerTest {
     @DisplayName("sendOtp 실패 - 메일 전송 실패")
     void sendOtp_fail_sendMailFail() throws Exception {
         // Given
-        final User user = UserData.user1;
-        final FindPwSendOtpRequest request = new FindPwSendOtpRequest(user.getId(), user.getEmail());
+        final User user = UserData.user1();
+        final FindPwSendOtpRequest request = new FindPwSendOtpRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
 
-        given(findUserService.sendOtp(request.getUserId(), request.getEmail()))
+        given(findUserService.sendOtp(any()))
                 .willReturn(new BaseResponse(SuccessFlag.N, Message.FIND_PW_SEND_OTP_FAIL_FAIL_TO_SEND_OTP));
 
         // When - Then

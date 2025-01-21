@@ -5,7 +5,6 @@ import lombok.*;
 import manage.store.annotation.UserEmail;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class FindPwBaseRequest {

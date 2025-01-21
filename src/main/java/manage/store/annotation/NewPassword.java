@@ -2,7 +2,7 @@ package manage.store.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import manage.store.validator.PasswordValidator;
+import manage.store.validator.NewPasswordValidator;
 
 import java.lang.annotation.*;
 
@@ -15,8 +15,8 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = PasswordValidator.class)
-public @interface Password {
+@Constraint(validatedBy = NewPasswordValidator.class)
+public @interface NewPassword {
 
     String message() default "비밀번호를 올바르게 입력해주세요.";
 

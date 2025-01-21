@@ -4,6 +4,7 @@ import manage.store.DTO.entity.User;
 import manage.store.config.DBConfiguration;
 import manage.store.consts.Profiles;
 import manage.store.consts.Tags;
+import manage.store.testUtils.BaseDockerTest;
 import manage.store.testUtils.UserUtils;
 import org.junit.jupiter.api.*;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -27,11 +28,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 @ActiveProfiles(Profiles.TEST)
 @ContextConfiguration(classes = DBConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserAccountMapperTest {
+class UserAccountMapperTest extends BaseDockerTest {
 
     /** Docker container for Test */
     @Container
-    private static final DockerComposeContainer composeContainer = new DockerComposeContainer(new File("./docker-compose.yml"));
+    private static final DockerComposeContainer composeContainer = getDockerComposeContainer();
     static {
         composeContainer.start();
     }
@@ -59,7 +60,7 @@ class UserAccountMapperTest {
     @DisplayName("selectUserById 성공")
     void selectUserById_success() {
         // Given
-        User user = users[0];
+        final User user = users[0];
 
         // When
         User dbUser = userAccountMapper.selectUserById(user.getId());
@@ -73,7 +74,7 @@ class UserAccountMapperTest {
     @DisplayName("selectUserById 실패 - user")
     void selectUserById_fail_noUser() {
         // Given
-        String noUserId = "noUserId";
+        final String noUserId = "noUserId";
 
         // When
         User dbUser = userAccountMapper.selectUserById(noUserId);
@@ -88,7 +89,7 @@ class UserAccountMapperTest {
     @DisplayName("insertUser 성공")
     public void insertUser_success() {
         // Given
-        User user = UserUtils.createUser("userId4");
+        final User user = UserUtils.createUser("userId4");
 
         // When
         int result = userAccountMapper.insertUser(user);
@@ -101,7 +102,7 @@ class UserAccountMapperTest {
     @DisplayName("insertUser 실패 - 중복된 id(PK)")
     public void insertUser_fail_duplicateId_PK() {
         // Given
-        User user = UserUtils.createUser("userId1");
+        final User user = UserUtils.createUser("userId1");
 
         // When - Then
         assertThrows(DuplicateKeyException.class, () -> userAccountMapper.insertUser(user));
@@ -111,7 +112,7 @@ class UserAccountMapperTest {
     @DisplayName("insertUser 실패 - 중복된 email(UNIQUE)")
     public void insertUser_fail_duplicateEmail_UNIQUE() {
         // Given
-        User user = UserUtils.createUser("userId4");
+        final User user = UserUtils.createUser("userId4");
         user.setEmail(users[0].getEmail());
 
         // When - Then
@@ -123,7 +124,7 @@ class UserAccountMapperTest {
     @DisplayName("insertUser 실패 - 중복된 phoneNo(UNIQUE)")
     public void insertUser_fail_duplicatePhoneNo_UNIQUE() {
         // Given
-        User user = UserUtils.createUser("userId4");
+        final User user = UserUtils.createUser("userId4");
         user.setPhoneNo(users[0].getPhoneNo());
 
         // When - Then
@@ -135,7 +136,7 @@ class UserAccountMapperTest {
     @DisplayName("insertUser 실패 - 중복된 residentRegistNo(UNIQUE)")
     public void insertUser_fail_duplicateResidentRegistNo_UNIQUE() {
         // Given
-        User user = UserUtils.createUser("userId4");
+        final User user = UserUtils.createUser("userId4");
         user.setResidentRegistNo(users[0].getResidentRegistNo());
 
         // When - Then
@@ -148,7 +149,7 @@ class UserAccountMapperTest {
     @DisplayName("updateUser 성공")
     public void updateUser_success() {
         // Given
-        User user = UserUtils.createUser(users[0].getId());
+        final User user = UserUtils.createUser(users[0].getId());
 
         // When
         int result = userAccountMapper.updateUser(user);
@@ -162,7 +163,7 @@ class UserAccountMapperTest {
     @DisplayName("updateUser 실패 - 존재하지 않는 id")
     public void updateUser_fail_noUser() {
         // Given
-        User user = UserUtils.createUser("noUserId");
+        final User user = UserUtils.createUser("noUserId");
 
         // When
         int result = userAccountMapper.updateUser(user);
@@ -175,7 +176,7 @@ class UserAccountMapperTest {
     @DisplayName("updateUser 실패 - 중복된 email(UNIQUE)")
     public void updateUser_fail_duplicateEmail_UNIQUE() {
         // Given
-        User user = users[0];
+        final User user = users[0];
         user.setEmail(users[1].getEmail());
 
         // When - Then
@@ -186,7 +187,7 @@ class UserAccountMapperTest {
     @DisplayName("updateUser 실패 - 중복된 phoneNo(UNIQUE)")
     public void updateUser_fail_duplicatePhoneNo_UNIQUE() {
         // Given
-        User user = users[0];
+        final User user = users[0];
         user.setPhoneNo(users[1].getPhoneNo());
 
         // When - Then
@@ -197,7 +198,7 @@ class UserAccountMapperTest {
     @DisplayName("updateUser 실패 - 중복된 residentRegistNo(UNIQUE)")
     public void updateUser_fail_duplicateResidentRegistNo_UNIQUE() {
         // Given
-        User user = users[0];
+        final User user = users[0];
         user.setResidentRegistNo(users[1].getResidentRegistNo());
 
         // When - Then

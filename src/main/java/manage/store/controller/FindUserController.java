@@ -38,10 +38,7 @@ public class FindUserController implements BaseController {
      */
     @PostMapping("pw/sendOtp")
     public ResponseEntity<FindPwSendOtpResponse> sendOtp(@RequestBody @Valid FindPwSendOtpRequest request) {
-        String userId = request.getUserId();
-        String email = request.getEmail();
-
-        BaseResponse result = findUserService.sendOtp(userId, email);
+        BaseResponse result = findUserService.sendOtp(request);
 
         if(result.getResult().isSuccess()) {
             String sessionKey = findUserPwSessionService.createSessionKey();

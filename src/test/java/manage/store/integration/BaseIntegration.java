@@ -1,6 +1,7 @@
 package manage.store.integration;
 
 import manage.store.consts.Tags;
+import manage.store.testUtils.BaseDockerTest;
 import manage.store.testUtils.MockMvcUtils;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -11,9 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.containers.DockerComposeContainer;
 
-import java.io.File;
 import java.util.Set;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -21,7 +20,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
-abstract public class BaseIntegration {
+abstract public class BaseIntegration extends BaseDockerTest {
 
     protected static class ConstrainedFields {
 
@@ -93,15 +92,6 @@ abstract public class BaseIntegration {
             if(StringUtils.hasText(tag) && tag.equals(Tags.Test.DOCS)) return true;
         }
         return false;
-    }
-
-    /** ------------------------------------------------------------------- */
-
-    /**
-     * Test용 Docker Compose Container 생성 및 반환
-     */
-    protected static DockerComposeContainer getDockerComposeContainer() {
-        return new DockerComposeContainer(new File("./docker-compose.test.yml"));
     }
 
     /** ------------------------------------------------------------------- */
