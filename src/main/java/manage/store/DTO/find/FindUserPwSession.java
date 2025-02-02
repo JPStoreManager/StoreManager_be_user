@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 @ToString
 public class FindUserPwSession {
 
-    private final Step[] stepOrder = {Step.NONE, Step.USER_INFO, Step.OTP, Step.NEW_PWD, Step.END};
+    private final Step[] stepOrder = {Step.NONE, Step.SEND_OTP, Step.VALIDATE_OTP, Step.NEW_PWD, Step.END};
 
     private Step completedStep;
     private String userId;
@@ -40,20 +40,26 @@ public class FindUserPwSession {
     }
 
     public enum Step {
-        NONE("none"),
-        USER_INFO("userInfo"),
-        OTP("otp"),
-        NEW_PWD("newPassword"),
-        END("end");
+        NONE("none", 0),
+        SEND_OTP("sendOtp", 1),
+        VALIDATE_OTP("validateOtp", 2),
+        NEW_PWD("newPassword", 3),
+        END("end", 4);
 
         private final String step;
+        private final int stepOrder;
 
-        Step(String step) {
+        Step(String step, int stepOrder) {
             this.step = step;
+            this.stepOrder = stepOrder;
         }
 
         public String getStep(){
             return this.step;
+        }
+
+        public int getStepOrder(){
+            return this.stepOrder;
         }
     }
 }

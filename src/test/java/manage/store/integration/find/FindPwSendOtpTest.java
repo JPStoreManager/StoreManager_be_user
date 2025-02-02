@@ -1,4 +1,4 @@
-package manage.store.integration;
+package manage.store.integration.find;
 
 import com.google.gson.Gson;
 import manage.store.DTO.entity.User;
@@ -7,6 +7,7 @@ import manage.store.consts.Profiles;
 import manage.store.consts.SuccessFlag;
 import manage.store.consts.Tags;
 import manage.store.data.UserData;
+import manage.store.integration.BaseIntegration;
 import manage.store.repository.UserAccountRepository;
 import manage.store.utils.ApiPathUtils;
 import org.junit.jupiter.api.*;
@@ -57,12 +58,13 @@ public class FindPwSendOtpTest extends BaseIntegration {
 
     private MockMvc mockMvc;
 
-    private final User user = UserData.user1();
+    private User user;
 
     @BeforeEach
     public void setUp(TestInfo testInfo, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = getMockMvc(testInfo, context, restDocumentation);
 
+        user = UserData.user1();
         userAccountRepository.insertUser(user);
     }
 
@@ -83,8 +85,9 @@ public class FindPwSendOtpTest extends BaseIntegration {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(SuccessFlag.Y.getValue()));
 
-        User updatedUser = userAccountRepository.selectUserById(request.getUserId());
-        assertThat(updatedUser.getOtp()).isNotEqualTo(user.getOtp());
+        User updatedUser = userAccountRepository.selectUserById(user.getId());
+        assertThat(updatedUser.getOtpNo()).isNotBlank();
+        assertThat(updatedUser.getOtpNo()).isNotEqualTo(user.getOtpNo());
 
         addDocs(result);
     }
@@ -172,5 +175,4 @@ public class FindPwSendOtpTest extends BaseIntegration {
                         fieldWithPath("sessionId").description("otp 전송에 성공하여 다음 단계가 진행될 때 인증에 사용할 토큰이 저장될 key").type(String.class).optional()
                 )));
     }
-
 }

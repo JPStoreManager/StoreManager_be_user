@@ -33,7 +33,7 @@ import static org.mockito.Mockito.mockStatic;
 
 @Tag(Tags.Test.UNIT)
 @ExtendWith(MockitoExtension.class)
-class FindUserServiceImplTest {
+class FindUserPwServiceImplTest {
 
     @Mock
     private UserAccountRepository userAccountRepository;
@@ -42,7 +42,7 @@ class FindUserServiceImplTest {
     private MailService mailService;
 
     @InjectMocks
-    private FindUserServiceImpl findUserService;
+    private FindUserPwServiceImpl findUserService;
 
 
     /** sendOtp */
@@ -154,7 +154,7 @@ class FindUserServiceImplTest {
         final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
-        user.setOtp(otp);
+        user.setOtpNo(otp);
 
         final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
         request.setUserId(userId);
@@ -246,7 +246,7 @@ class FindUserServiceImplTest {
         final User user = UserData.user1();
         user.setId(userId);
         user.setEmail(email);
-        user.setOtp(otp + "notSame");
+        user.setOtpNo(otp + "notSame");
 
         final FindPwValidateOtpRequest request = new FindPwValidateOtpRequest();
         request.setUserId(userId);

@@ -9,6 +9,7 @@ public class ApiPathUtils {
     public enum ApiName {
         LOGIN("login"),
         FIND_PW_SEND_OTP("findPw_sendOtp"),
+        FIND_PW_VALIDATE_OTP("findPw_validateOtp"),
         ;
 
         private String name;
@@ -34,6 +35,7 @@ public class ApiPathUtils {
     private static final ImmutableMap<ApiName, String> apiPathByName = ImmutableMap.<ApiName, String>builder()
             .put(ApiName.LOGIN, WebConfiguration.getContextPath() + "/login")
             .put(ApiName.FIND_PW_SEND_OTP, WebConfiguration.getContextPath() + "/find/pw/sendOtp")
+            .put(ApiName.FIND_PW_VALIDATE_OTP, WebConfiguration.getContextPath() + "/find/pw/validateOtp")
             .build();
 
     /**

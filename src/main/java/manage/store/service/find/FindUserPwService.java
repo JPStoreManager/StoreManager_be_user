@@ -4,9 +4,10 @@ import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.find.FindPwSendOtpRequest;
 import manage.store.DTO.find.FindPwUpdatePwRequest;
 import manage.store.DTO.find.FindPwValidateOtpRequest;
+import manage.store.DTO.find.FindUserPwSession;
 import manage.store.exception.InvalidParameterException;
 
-public interface FindUserService {
+public interface FindUserPwService {
 
     /** 비밀번호 찾기 */
     /**
@@ -47,5 +48,14 @@ public interface FindUserService {
      *                                   - 사용자가 입력한 신규 비밀번호가 유효하지 않을 경우
      */
     BaseResponse updatePassword(FindPwUpdatePwRequest request);
+
+    /**
+     * 수행하려는 비밀번호 찾기 step을 할 수 있는 session인지 확인
+     * @param session 사용자의 비밀번호 찾기에 대한 session
+     * @param targetStep 사용자가 수행하려는 step
+     * @return true: session이 targetStep을 수행할 수 있는 경우<br>
+     * false: session이 targetStep을 수행할 수 없는 경우
+     */
+    boolean isValidStep(FindUserPwSession session, FindUserPwSession.Step targetStep);
 
 }

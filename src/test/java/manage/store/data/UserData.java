@@ -25,7 +25,7 @@ public class UserData {
                 .bankAccountNo("1231231231")
                 .monthSalary(2000000)
                 .hourWage(null)
-                .otp("otp1")
+                .otpNo("otp1")
                 .createdBy("hs.lee0130")
                 .lastUpdatedBy("hs.lee0130")
                 .build();
@@ -48,7 +48,7 @@ public class UserData {
                 .bankAccountNo("1234123412")
                 .monthSalary(null)
                 .hourWage(10000)
-                .otp("otp2")
+                .otpNo("otp2")
                 .createdBy("hs.lee0130")
                 .lastUpdatedBy("hs.lee0130")
                 .build();
@@ -71,7 +71,7 @@ public class UserData {
                 .bankAccountNo("12345123451")
                 .monthSalary(12300000)
                 .hourWage(null)
-                .otp("otp3")
+                .otpNo("otp3")
                 .createdBy("hs.lee0130")
                 .lastUpdatedBy("hs.lee0130")
                 .build();

@@ -69,7 +69,7 @@ public class User {
     @PositiveOrZero(message = "hourWage은 0이상입니다.")
     private Integer hourWage;
 
-    private String otp;
+    private String otpNo;
 
     @NotBlank(message = "createdBy는 공란일 수 없습니다.")
     private String createdBy;
@@ -100,7 +100,8 @@ public class User {
                 && Objects.equals(getBankName(), user.getBankName())
                 && Objects.equals(getBankAccountNo(), user.getBankAccountNo())
                 && Objects.equals(getMonthSalary(), user.getMonthSalary())
-                && Objects.equals(getHourWage(), user.getHourWage());
+                && Objects.equals(getHourWage(), user.getHourWage())
+                && Objects.equals(getOtpNo(), user.getOtpNo());
     }
 
     /**

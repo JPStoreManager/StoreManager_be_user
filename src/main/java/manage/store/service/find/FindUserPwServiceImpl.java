@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
-import manage.store.DTO.find.FindPwBaseRequest;
-import manage.store.DTO.find.FindPwSendOtpRequest;
-import manage.store.DTO.find.FindPwUpdatePwRequest;
-import manage.store.DTO.find.FindPwValidateOtpRequest;
+import manage.store.DTO.find.*;
 import manage.store.consts.Message;
 import manage.store.consts.SuccessFlag;
 import manage.store.exception.InvalidParameterException;
@@ -24,7 +21,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FindUserServiceImpl implements FindUserService {
+public class FindUserPwServiceImpl implements FindUserPwService {
 
     private final UserAccountRepository userAccountRepository;
 
@@ -38,11 +35,11 @@ public class FindUserServiceImpl implements FindUserService {
         // 2. OTP 생성 및 user에 업데이트
         User user = userAccountRepository.selectUserById(request.getUserId());
         String otp = SecretUtils.createOtp(6);
-        user.setOtp(otp);
+        user.setOtpNo(otp);
         userAccountRepository.updateUser(user);
 
         // 3. OTP 전송
-        try{
+        try {
             mailService.sendOtpMail(user.getEmail(), otp);
         } catch(Exception e) {
             String curMethodName = ReflectionUtils.getCurMethodName();
@@ -62,7 +59,7 @@ public class FindUserServiceImpl implements FindUserService {
 
         // 2. 계정에 저장된 OTP와 동일한지 확인
         User user = userAccountRepository.selectUserById(request.getUserId());
-        String originOtp = user.getOtp();
+        String originOtp = user.getOtpNo();
         boolean isOtpValid = originOtp.equals(request.getOtp());
 
         return new BaseResponse(isOtpValid ? SuccessFlag.Y : SuccessFlag.N,
@@ -83,10 +80,19 @@ public class FindUserServiceImpl implements FindUserService {
         user.setPassword(SecretUtils.encrypt(request.getNewPassword()));
 
         // 3. OTP 초기화 및 비밀번호 업데이트
-        user.setOtp(null);
+        user.setOtpNo(null);
         userAccountRepository.updateUser(user);
 
         return new BaseResponse(SuccessFlag.Y, Message.FIND_PW_UPDATE_PW_SUCCESS);
+    }
+
+    @Override
+    public boolean isValidStep(FindUserPwSession session, FindUserPwSession.Step targetStep) {
+        if(session == null || session.getCompletedStep() == null) return false;
+
+        FindUserPwSession.Step completedStep = session.getCompletedStep();
+
+        return targetStep.getStepOrder() <= completedStep.getStepOrder() + 1;
     }
 
     private void validateFindPwParam(FindPwBaseRequest request) {

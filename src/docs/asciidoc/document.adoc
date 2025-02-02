@@ -39,3 +39,22 @@ include::{snippets}/findPassword/sendOtp/http-response.adoc[]
 
 ==== Response Fields
 include::{snippets}/findPassword/sendOtp/response-fields.adoc[]
+
+=== 2. Validate Otp
+
+include::{snippets}/findPassword/validateOtp/curl-request.adoc[]
+
+==== Http Request
+include::{snippets}/findPassword/validateOtp/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/findPassword/validateOtp/request-headers.adoc[]
+
+==== Request Fields
+include::{snippets}/findPassword/validateOtp/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/findPassword/validateOtp/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/findPassword/validateOtp/response-fields.adoc[]
