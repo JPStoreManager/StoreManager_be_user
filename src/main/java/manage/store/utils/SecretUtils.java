@@ -1,11 +1,17 @@
 package manage.store.utils;
 
+import manage.store.exception.InvalidParameterException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
+
+import java.util.Random;
 
 public class SecretUtils {
 
     private static final BCryptPasswordEncoder encryptor = new BCryptPasswordEncoder();
+
+    private static final String otpChar = "0123456789abcdefghijklmnopqrstuvwxyz";
+
 
     /**
      * 문자열를 암호화
@@ -27,10 +33,23 @@ public class SecretUtils {
         return encryptor.matches(rawStr, standardStr);
     }
 
-    public static void main(String[] args) {
-        System.out.println(SecretUtils.encrypt("password1"));
-        System.out.println(SecretUtils.encrypt("password2"));
-        System.out.println(SecretUtils.encrypt("password3"));
+    /**
+     * 길이에 맞는 OTP 생성 <br>
+     * 영어 대소문자 및 숫자로 구성
+     * @param length
+     * @return
+     */
+    public static String createOtp(int length) {
+        if(length <= 0) throw new InvalidParameterException("Length must be over 0");
 
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int idx = random.nextInt(otpChar.length());
+            otp.append(otpChar.charAt(idx));
+        }
+
+        return otp.toString();
     }
+
 }

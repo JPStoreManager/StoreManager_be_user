@@ -1,7 +1,7 @@
 = Api Documentation
 :sectnums:
 :toc: left
-:toclevels: 2
+:toclevels: 3
 :toc-title: API List
 :source-highlighter: prettify
 
@@ -21,3 +21,59 @@ include::{snippets}/login/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/login/response-fields.adoc[]
+
+== Find Password
+
+=== 1. Send Otp
+
+include::{snippets}/findPassword/sendOtp/curl-request.adoc[]
+
+==== Http Request
+include::{snippets}/findPassword/sendOtp/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/findPassword/sendOtp/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/findPassword/sendOtp/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/findPassword/sendOtp/response-fields.adoc[]
+
+=== 2. Validate Otp
+
+include::{snippets}/findPassword/validateOtp/curl-request.adoc[]
+
+==== Http Request
+include::{snippets}/findPassword/validateOtp/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/findPassword/validateOtp/request-headers.adoc[]
+
+==== Request Fields
+include::{snippets}/findPassword/validateOtp/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/findPassword/validateOtp/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/findPassword/validateOtp/response-fields.adoc[]
+
+=== 3. Update Password
+
+include::{snippets}/findPassword/updatePassword/curl-request.adoc[]
+
+==== Http Request
+include::{snippets}/findPassword/updatePassword/http-request.adoc[]
+
+==== Request Headers
+include::{snippets}/findPassword/updatePassword/request-headers.adoc[]
+
+==== Request Fields
+include::{snippets}/findPassword/updatePassword/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/findPassword/updatePassword/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/findPassword/updatePassword/response-fields.adoc[]

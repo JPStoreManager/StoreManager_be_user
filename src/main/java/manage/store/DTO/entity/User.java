@@ -1,33 +1,84 @@
 package manage.store.DTO.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+import manage.store.annotation.UserEmail;
+import manage.store.annotation.UserId;
+import manage.store.validator.ValidatorUtils;
 
 import java.util.Objects;
+import java.util.Set;
 
+@Slf4j
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
 public class User {
+
+    @UserId
     private String id;
+
+    @NotBlank
+    @Size(max = 300, message = "password는 최대 300자리 이하입니다.")
     private String password;
+
+    @NotBlank(message = "name은 공란일 수 없습니다.")
+    @Size(min = 2, max = 5, message = "name은 최소 2자리 이상 최대 5자리 미만입니다.")
     private String name;
+
+    @Size(min = 13, max = 13, message = "residentRegistNo는 13자리입니다.")
     private String residentRegistNo;
+
+    @Size(min = 11, max = 11, message = "phoneNo는 11자리 입니다.")
     private String phoneNo;
+
+    @Size(max = 100, message = "email은 최대 100자 이하입니다.")
+    @UserEmail
     private String email;
+
+    @Size(max = 200, message = "address은 최대 200자리 이하입니다.")
     private String address;
+
+    @NotBlank(message = "authCd는 공란일 수 없습니다.")
+    @Size(min = 1, max = 5, message = "authCd는 최소 1자리 이상 최대 5자리 이하여야 합니다.")
     private String authCd;
+
+    @NotBlank(message = "workStartDate는 공란일 수 없습니다.")
     private String workStartDate;
+
     private String workEndDate;
+
+    @NotBlank(message = "workStatusCd는 공란일 수 없습니다.")
+    @Size(min = 1, max = 5, message = "workStatusCd는 최소 1자리 이상 최대 5자리 이하여야 합니다.")
     private String workStatusCd;
+
+    @Size(max = 6, message = "bankName은 최대 6자리 이하입니다.")
     private String bankName;
+
+    @Size(max = 20, message = "bankAccountNo은 최대 20자리 이하입니다.")
     private String bankAccountNo;
+
+    @PositiveOrZero(message = "monthSalary은 0이상입니다.")
     private Integer monthSalary;
+
+    @PositiveOrZero(message = "hourWage은 0이상입니다.")
     private Integer hourWage;
+
+    private String otpNo;
+
+    @NotBlank(message = "createdBy는 공란일 수 없습니다.")
     private String createdBy;
+
     private String createdDate;
+
+    @NotBlank(message = "lastUpdatedBy는 공란일 수 없습니다.")
     private String lastUpdatedBy;
+
     private String lastUpdatedDate;
 
     @Override
@@ -49,7 +100,18 @@ public class User {
                 && Objects.equals(getBankName(), user.getBankName())
                 && Objects.equals(getBankAccountNo(), user.getBankAccountNo())
                 && Objects.equals(getMonthSalary(), user.getMonthSalary())
-                && Objects.equals(getHourWage(), user.getHourWage());
+                && Objects.equals(getHourWage(), user.getHourWage())
+                && Objects.equals(getOtpNo(), user.getOtpNo());
+    }
+
+    /**
+     * 현재 객체의 유효한 데이터를 가지고 있는 객체인지 검사
+     * @return true: 유효한 객체, false: 유효하지 않은 객체
+     */
+    public boolean isValid() {
+        Validator validator = ValidatorUtils.getDefaultValidator();
+        Set<ConstraintViolation<User>> validationResult = validator.validate(this);
+        return validationResult.isEmpty();
     }
 }
 

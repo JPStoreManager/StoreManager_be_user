@@ -4,7 +4,7 @@
 
     <sql id="userCol">
         id, password, name, resident_regist_no, phone_no, email, address,
-        auth_cd, work_start_date, work_end_date, work_status_cd, bank_name, bank_account_no, month_salary, hour_wage,
+        auth_cd, work_start_date, work_end_date, work_status_cd, bank_name, bank_account_no, month_salary, hour_wage, otp_no,
         created_by, created_date, last_updated_by, last_updated_date
     </sql>
 
@@ -18,7 +18,7 @@
         INSERT INTO user (<include refid="userCol"/>)
         VALUES (
             #{id}, #{password}, #{name}, #{residentRegistNo}, #{phoneNo}, #{email}, #{address},
-            #{authCd}, #{workStartDate}, #{workEndDate}, #{workStatusCd}, #{bankName}, #{bankAccountNo}, #{monthSalary}, #{hourWage},
+            #{authCd}, #{workStartDate}, #{workEndDate}, #{workStatusCd}, #{bankName}, #{bankAccountNo}, #{monthSalary}, #{hourWage}, #{otpNo},
             #{createdBy}, CURRENT_TIMESTAMP, #{lastUpdatedBy}, CURRENT_TIMESTAMP
         )
     </insert>
@@ -39,6 +39,7 @@
                bank_account_no      = #{bankAccountNo},
                month_salary         = #{monthSalary},
                hour_wage            = #{hourWage},
+               otp_no               = #{otpNo},
                last_updated_by      = #{lastUpdatedBy},
                last_updated_date    = CURRENT_TIMESTAMP
         WHERE id = #{id}

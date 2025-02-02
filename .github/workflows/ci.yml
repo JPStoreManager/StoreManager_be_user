@@ -11,6 +11,7 @@ on:
   pull_request:
     types:
       - opened
+      - synchronize
     branches:
       - main
       - develop
@@ -52,8 +53,12 @@ jobs:
           echo "DB_URL=${{ secrets.DB_UR }}" >> .env 
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "GOOGLE_EMAIL=${{ secrets.GOOGLE_EMAIL }}" >> .env
+          echo "GOOGLE_APP_PW=${{ secrets.GOOGLE_APP_PW }}" >> .env
           ./gradlew build
         env:
           DB_URL: ${{ secrets.DB_URL }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
+          GOOGLE_APP_PW: ${{ secrets.GOOGLE_APP_PW }}

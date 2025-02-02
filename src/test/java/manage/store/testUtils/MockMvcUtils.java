@@ -10,6 +10,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 public class MockMvcUtils {
 
+    /**
+     * test시 모든 API에 context-path를 적용
+     */
     public static MockMvcBuilder configureDefaultMockMvc(WebApplicationContext context) {
         return MockMvcBuilders.webAppContextSetup(context)
                 .defaultRequest(get("/").contextPath(WebConfiguration.getContextPath()))

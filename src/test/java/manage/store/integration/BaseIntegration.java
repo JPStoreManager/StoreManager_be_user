@@ -1,6 +1,7 @@
 package manage.store.integration;
 
 import manage.store.consts.Tags;
+import manage.store.testUtils.BaseDockerTest;
 import manage.store.testUtils.MockMvcUtils;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -19,7 +20,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
-abstract public class BaseIntegration {
+abstract public class BaseIntegration extends BaseDockerTest {
 
     protected static class ConstrainedFields {
 
@@ -35,18 +36,36 @@ abstract public class BaseIntegration {
         }
     }
 
+    /** ------------------------------------------------------------------- */
+
+    /**
+     * Spring Rest Docs 작성을 위한 문서 코드 작성 강제
+     */
     protected abstract void addDocs(ResultActions result) throws Exception;
 
+    /** ------------------------------------------------------------------- */
+
+    /**
+     * Class / function에 달려있는 태그를 확인해서 Spring Rest Docs용인지 일반 Test인지 확인하고 용도에 맞는 mockMvc 반환
+     * @param testInfo 해당 테스트 정보
+     */
     protected MockMvc getMockMvc(TestInfo testInfo, WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         if(isTestForDocs(testInfo.getTags())) return getDocsMockMvc(context, restDocumentation);
         else return getPureMockMvc(context);
     }
 
+    /**
+     * 단위 테스트용 mockMvc 반환
+     */
     private MockMvc getPureMockMvc(WebApplicationContext context) {
         return MockMvcUtils.configureDefaultMockMvc(context).build();
     }
 
     // TODO 추후 개발 서버 생성 시 URL 삽입
+
+    /**
+     * Spring Rest Docs용 MockMvc 반환
+     */
     private MockMvc getDocsMockMvc(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         return ((DefaultMockMvcBuilder)(MockMvcUtils.configureDefaultMockMvc(context)))
                 .apply(documentationConfiguration(restDocumentation)
@@ -74,5 +93,7 @@ abstract public class BaseIntegration {
         }
         return false;
     }
+
+    /** ------------------------------------------------------------------- */
 
 }

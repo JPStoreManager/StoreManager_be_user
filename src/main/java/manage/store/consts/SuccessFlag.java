@@ -12,4 +12,8 @@ public enum SuccessFlag {
     SuccessFlag(String value) {
         this.value = value;
     }
+
+    public boolean isSuccess() {
+        return this == Y;
+    }
 }

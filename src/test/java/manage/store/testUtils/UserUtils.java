@@ -6,7 +6,7 @@ public interface UserUtils {
 
     /**
      * 사용자 객체를 생성한다.
-     * @param id 사용자 아이디
+     * @param id 생성할 사용자 아이디
      * @return 사용자 객체
      */
     static User createUser(String id) {
