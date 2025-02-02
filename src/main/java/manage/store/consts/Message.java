@@ -11,7 +11,7 @@ public interface Message {
     String LOGIN_FAIL_NOT_EXIST_USER = "로그인 실패";
 
     /** 비밀번호 찾기 */
-    String FIND_PW_FAIL_INVALID_PARAM = "올바른 정보를 입력하지 않았거나 잘못된 접근입니다.";
+    String FIND_PW_FAIL_INVALID_PARAM_OR_ACCESS = "올바른 정보를 입력하지 않았거나 잘못된 접근입니다.";
     String FIND_PW_SEND_OTP_SUCCESS = "OTP 전송 성공";
     String FIND_PW_SEND_OTP_FAIL_FAIL_TO_SEND_OTP = "OTP 메일 전송에 실패하였습니다.";
     String FIND_PW_VALIDATE_OTP_SUCCESS = "OTP 인증 성공";

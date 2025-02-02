@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import manage.store.DTO.common.BaseResponse;
 import manage.store.DTO.entity.User;
 import manage.store.DTO.find.FindPwSendOtpRequest;
+import manage.store.DTO.find.FindPwUpdatePwRequest;
 import manage.store.DTO.find.FindPwValidateOtpRequest;
 import manage.store.DTO.find.FindUserPwSession;
 import manage.store.consts.Message;
@@ -371,5 +372,153 @@ class FindUserPwControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
     }
+
+    /**
+     * updatePassword
+     */
+    private static final String UPDATE_PW_PATH = ApiPathUtils.getPath(ApiPathUtils.ApiName.FIND_PW_UPDATE_PW);
+
+    @Test
+    @DisplayName("updatePassword 성공")
+    void updatePassword_success() throws Exception {
+        // Given
+        final User user = UserData.user1();
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
+        request.setNewPassword("1234qwer");
+        final String sessionId = "SESSION_ID";
+
+        FindUserPwSession session = new FindUserPwSession(FindUserPwSession.Step.VALIDATE_OTP, request.getUserId(), request.getEmail());
+        given(findUserPwSessionService.getSession(sessionId)).willReturn(session);
+        given(findUserPwService.isValidStep(session, FindUserPwSession.Step.NEW_PW)).willReturn(true);
+        given(findUserPwService.updatePassword(any())).willReturn(new BaseResponse(SuccessFlag.Y, Message.FIND_PW_UPDATE_PW_SUCCESS));
+        doNothing().when(findUserPwSessionService).removeSession(sessionId);
+
+        // When - Then
+        Gson gson = new Gson();
+        mock.perform(post(UPDATE_PW_PATH)
+                .header(FIND_PW_HEADER_ID, sessionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(SuccessFlag.Y.getValue()));
+    }
+
+    @Test
+    @DisplayName("updatePassword 실패 - 필수 헤더 JP_FPW_ID 없음")
+    void updatePassword_fail_noHeader() throws Exception {
+        // Given
+        final User user = UserData.user1();
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
+        request.setNewPassword("1234qwer");
+
+        // When - Then
+        Gson gson = new Gson();
+        mock.perform(post(UPDATE_PW_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
+    }
+
+    @Test
+    @DisplayName("updatePassword 실패 - 잘못된 파라미터")
+    void updatePassword_fail_invalidParam() throws Exception {
+        // Given
+        final User user = UserData.user1();
+        final String SESSION_ID = "sessionId";
+        final String[][] params = {
+                {null, null, null},
+
+                {user.getId(), user.getEmail(), null},
+                {user.getId(), user.getEmail(), ""},
+                {user.getId(), user.getEmail(), " "},
+
+                {user.getId(), user.getEmail(), "12345678"},
+                {user.getId(), user.getEmail(), "qwerabcd"},
+                {user.getId(), user.getEmail(), "1234!@#$"},
+                {user.getId(), user.getEmail(), "qwer!@#$"},
+                {user.getId(), user.getEmail(), "!@#$%^&*"},
+
+                {null, user.getEmail(), "1234qwer"},
+                {"", user.getEmail(), "1234qwer"},
+                {" ", user.getEmail(), "1234qwer"},
+
+                {user.getId(), null, "1234qwer"},
+                {user.getId(), "", "1234qwer"},
+                {user.getId(), " ", "1234qwer"},
+        };
+
+        // When - Then
+        Gson gson = new Gson();
+        for (String[] param : params) {
+            FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+            request.setUserId(param[0]);
+            request.setEmail(param[1]);
+            request.setNewPassword(param[2]);
+
+            mock.perform(post(UPDATE_PW_PATH)
+                    .header(FIND_PW_HEADER_ID, SESSION_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(gson.toJson(request)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
+        }
+    }
+
+    @Test
+    @DisplayName("updatePassword 실패 - 잘못된 접근")
+    void updatePassword_fail_invalidAccess() throws Exception {
+        // Given
+        final User user = UserData.user1();
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
+        request.setNewPassword("1234qwer");
+        final String sessionId = "SESSION_ID";
+
+        FindUserPwSession session = new FindUserPwSession(FindUserPwSession.Step.NONE, request.getUserId(), request.getEmail());
+        given(findUserPwSessionService.getSession(sessionId)).willReturn(session);
+        given(findUserPwService.isValidStep(session, FindUserPwSession.Step.NEW_PW)).willReturn(false);
+
+        // When - Then
+        Gson gson = new Gson();
+        mock.perform(post(UPDATE_PW_PATH)
+                .header(FIND_PW_HEADER_ID, sessionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
+    }
+
+    @Test
+    @DisplayName("updatePassword 실패 - 업데이트 실패")
+    void updatePassword_fail_updateFail() throws Exception {
+        // Given
+        final User user = UserData.user1();
+        final FindPwUpdatePwRequest request = new FindPwUpdatePwRequest();
+        request.setUserId(user.getId());
+        request.setEmail(user.getEmail());
+        request.setNewPassword("1234qwer");
+        final String sessionId = "SESSION_ID";
+
+        FindUserPwSession session = new FindUserPwSession(FindUserPwSession.Step.VALIDATE_OTP, request.getUserId(), request.getEmail());
+        given(findUserPwSessionService.getSession(sessionId)).willReturn(session);
+        given(findUserPwService.isValidStep(session, FindUserPwSession.Step.NEW_PW)).willReturn(true);
+        given(findUserPwService.updatePassword(any())).willReturn(new BaseResponse(SuccessFlag.N, Message.FIND_PW_UPDATE_PW_FAIL_INVALID_PW));
+
+        // When - Then
+        Gson gson = new Gson();
+        mock.perform(post(UPDATE_PW_PATH)
+                .header(FIND_PW_HEADER_ID, sessionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(SuccessFlag.N.getValue()));
+    }
+
 
 }

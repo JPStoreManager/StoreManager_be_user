@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 @ToString
 public class FindUserPwSession {
 
-    private final Step[] stepOrder = {Step.NONE, Step.SEND_OTP, Step.VALIDATE_OTP, Step.NEW_PWD, Step.END};
+    private final Step[] stepOrder = {Step.NONE, Step.SEND_OTP, Step.VALIDATE_OTP, Step.NEW_PW, Step.END};
 
     private Step completedStep;
     private String userId;
@@ -43,7 +43,7 @@ public class FindUserPwSession {
         NONE("none", 0),
         SEND_OTP("sendOtp", 1),
         VALIDATE_OTP("validateOtp", 2),
-        NEW_PWD("newPassword", 3),
+        NEW_PW("newPassword", 3),
         END("end", 4);
 
         private final String step;

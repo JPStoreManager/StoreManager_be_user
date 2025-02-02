@@ -55,6 +55,7 @@ public class FindUserPwController implements BaseController {
 
     /**
      * 비밀번호 찾기 - OTP 검증 <br>
+     * @header JP_FPW_ID 비밀번호 찾기 세션 아이디
      * @param request userId {@code String, mandatory}: 사용자 아이디 <br>
      *                email {@code String, mandatory}: 사용자 이메일 <br>
      *                otp {@code String, mandatory}: 사용자가 입력한 OTP 번호
@@ -81,8 +82,37 @@ public class FindUserPwController implements BaseController {
             return ResponseEntity.ok(new FindPwValidateOtpResponse(result.getResult(), result.getMsg(), sessionId));
         }
 
-        // 4. 응답 반환
+        // 실패 응답 반환
         return ResponseEntity.ok(new FindPwValidateOtpResponse(result.getResult(), result.getMsg()));
+    }
+
+    /**
+     * 비밀번호 찾기 - 비밀번호 업데이트 <br>
+     * @header JP_FPW_ID - 비밀번호 찾기 세션 아이디
+     * @param request userId {@code String, mandatory}: 사용자 아이디 <br>
+     *                email {@code String, mandatory}: 사용자 이메일 <br>
+     *                newPassword {@code String, mandatory}: 사용자가 신규로 입력한 비밀번호
+     * @return result {@code SuccessFlag} - 비밀번호 업데이트 성공 시 Y, 잘못된 비밀번호일 시 N <br>
+     *         msg {@code String} - 성공 / 실패에 대한 메세지
+     */
+    @PostMapping("updatePw")
+    public ResponseEntity<FindPwUpdatePwResponse> updatePassword(@RequestHeader(value = FIND_PW_HEADER_ID) String sessionId,
+                                                                 @RequestBody @Valid FindPwUpdatePwRequest request) {
+        // 1. otp 검증 단계를 거쳤는지 session을 통해 검증
+        FindUserPwSession session = findUserPwSessionService.getSession(sessionId);
+        if(!findUserPwService.isValidStep(session, FindUserPwSession.Step.NEW_PW)) {
+            return ResponseEntity.badRequest().body(new FindPwUpdatePwResponse(SuccessFlag.N, Message.FIND_PW_FAIL_INVALID_PARAM_OR_ACCESS));
+        }
+
+        // 2. 비밀번호 업데이트
+        BaseResponse result = findUserPwService.updatePassword(request);
+        if(result.getResult().isSuccess()) {
+            // 3. 세션 비활성화
+            findUserPwSessionService.removeSession(sessionId);
+        }
+
+        // 4. 실패 응답 반환
+        return ResponseEntity.ok(new FindPwUpdatePwResponse(result.getResult(), result.getMsg()));
     }
 
     /**
@@ -92,7 +122,7 @@ public class FindUserPwController implements BaseController {
     public ResponseEntity<BaseResponse> handleInvalidParameterException(Exception e) {
         log.info("Invalid Parameter was inputted. Error Message: {}", ExceptionUtils.getExceptionErrorMsg(e));
 
-        return ResponseEntity.badRequest().body(new ParameterValidationFailResponse(Message.FIND_PW_FAIL_INVALID_PARAM));
+        return ResponseEntity.badRequest().body(new ParameterValidationFailResponse(Message.FIND_PW_FAIL_INVALID_PARAM_OR_ACCESS));
     }
 
 }

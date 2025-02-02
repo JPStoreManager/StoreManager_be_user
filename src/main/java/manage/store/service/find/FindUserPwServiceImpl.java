@@ -75,11 +75,9 @@ public class FindUserPwServiceImpl implements FindUserPwService {
         if(!NewPasswordValidator.isValid(request.getNewPassword()))
             throw new InvalidParameterException("새로운 비밀번호가 형식에 맞지 않습니다.");
 
-        // 3. 비밀번호 암호화하여 업데이트
+        // 3. 비밀번호 암호화하여 업데이트 & OTP 초기화
         User user = userAccountRepository.selectUserById(request.getUserId());
         user.setPassword(SecretUtils.encrypt(request.getNewPassword()));
-
-        // 3. OTP 초기화 및 비밀번호 업데이트
         user.setOtpNo(null);
         userAccountRepository.updateUser(user);
 

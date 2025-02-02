@@ -10,6 +10,7 @@ public class ApiPathUtils {
         LOGIN("login"),
         FIND_PW_SEND_OTP("findPw_sendOtp"),
         FIND_PW_VALIDATE_OTP("findPw_validateOtp"),
+        FIND_PW_UPDATE_PW("findPw_updatePw")
         ;
 
         private String name;
@@ -36,6 +37,7 @@ public class ApiPathUtils {
             .put(ApiName.LOGIN, WebConfiguration.getContextPath() + "/login")
             .put(ApiName.FIND_PW_SEND_OTP, WebConfiguration.getContextPath() + "/find/pw/sendOtp")
             .put(ApiName.FIND_PW_VALIDATE_OTP, WebConfiguration.getContextPath() + "/find/pw/validateOtp")
+            .put(ApiName.FIND_PW_UPDATE_PW, WebConfiguration.getContextPath() + "/find/pw/updatePw")
             .build();
 
     /**
